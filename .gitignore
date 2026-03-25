@@ -1,0 +1,11 @@
+# ignore istio completely
+istio-1.20.0/
+
+# ignore output files
+output/
+
+# ignore binary
+minikube-linux-amd64
+
+# ignore nested git repo
+muBench/.git
