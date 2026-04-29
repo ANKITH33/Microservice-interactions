@@ -10,3 +10,4 @@ minikube-linux-amd64
 # ignore nested git repo
 muBench/.gitKMamiz/
 KMamiz/
+microservices-demo/
