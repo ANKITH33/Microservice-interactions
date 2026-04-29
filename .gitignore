@@ -8,4 +8,4 @@ output/
 minikube-linux-amd64
 
 # ignore nested git repo
-muBench/.git
+muBench/.gitKMamiz/
