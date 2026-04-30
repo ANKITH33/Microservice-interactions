@@ -2,76 +2,76 @@
   {
     "parent": "frontend.default",
     "child": "productcatalogservice.default",
-    "callCount": 2571
+    "callCount": 2037
   },
   {
     "parent": "frontend.default",
-    "child": "cartservice.default",
-    "callCount": 481
-  },
-  {
-    "parent": "recommendationservice.default",
-    "child": "productcatalogservice.default",
-    "callCount": 389
+    "child": "currencyservice.default",
+    "callCount": 1359
   },
   {
     "parent": "loadgenerator.default",
     "child": "frontend.default",
-    "callCount": 536
+    "callCount": 421
+  },
+  {
+    "parent": "frontend.default",
+    "child": "cartservice.default",
+    "callCount": 379
+  },
+  {
+    "parent": "recommendationservice.default",
+    "child": "productcatalogservice.default",
+    "callCount": 298
   },
   {
     "parent": "frontend.default",
     "child": "recommendationservice.default",
-    "callCount": 388
-  },
-  {
-    "parent": "frontend.default",
-    "child": "currencyservice.default",
-    "callCount": 1570
+    "callCount": 298
   },
   {
     "parent": "frontend.default",
     "child": "adservice.default",
-    "callCount": 305
+    "callCount": 253
   },
   {
     "parent": "frontend.default",
     "child": "shippingservice.default",
-    "callCount": 117
+    "callCount": 86
   },
   {
     "parent": "checkoutservice.default",
     "child": "emailservice.default",
-    "callCount": 18
+    "callCount": 8
   },
   {
     "parent": "checkoutservice.default",
     "child": "cartservice.default",
-    "callCount": 38
+    "callCount": 16
   },
   {
     "parent": "checkoutservice.default",
     "child": "shippingservice.default",
-    "callCount": 36
+    "callCount": 16
   },
   {
     "parent": "checkoutservice.default",
     "child": "paymentservice.default",
-    "callCount": 17
+    "callCount": 8
   },
   {
     "parent": "checkoutservice.default",
     "child": "currencyservice.default",
-    "callCount": 67
+    "callCount": 32
   },
   {
     "parent": "checkoutservice.default",
     "child": "productcatalogservice.default",
-    "callCount": 48
+    "callCount": 24
   },
   {
     "parent": "frontend.default",
     "child": "checkoutservice.default",
-    "callCount": 18
+    "callCount": 8
   }
 ]

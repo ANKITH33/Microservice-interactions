@@ -5,7 +5,6 @@
   "currencyservice.default",
   "emailservice.default",
   "frontend.default",
-  "istio-ingressgateway.istio-system",
   "loadgenerator.default",
   "paymentservice.default",
   "productcatalogservice.default",
