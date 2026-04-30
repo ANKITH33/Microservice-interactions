@@ -1,0 +1,464 @@
+{
+  "service_bottlenecks": [
+    {
+      "service": "productcatalogservice.default",
+      "severity": "high",
+      "bottleneck_score": 15.6177,
+      "bottleneck_score_adj": 15.6177,
+      "risk_score": 1.1952,
+      "reasons": [
+        "high tail latency \u2014 p99/p50 = 5.0\u00d7 (p50=0.9ms, p99=4.7ms)",
+        "high fan-in \u2014 AIS=3 callers, 1 replica(s) \u2192 effective AIS/replica = 3.00"
+      ],
+      "latency": {
+        "p50_ms": 0.939,
+        "p95_ms": 2.162,
+        "p99_ms": 4.68,
+        "mean_ms": 1.244
+      },
+      "coupling": {
+        "ais": 3,
+        "ads": 0,
+        "acs": 0,
+        "sdp": 0.0
+      },
+      "cohesion": {
+        "sidc": 0.5,
+        "siuc": 0.6564,
+        "tsic": 0.5782,
+        "num_endpoints": 2
+      },
+      "tail_ratio": 4.984,
+      "replica_count": 1,
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "worst_endpoint": "/hipstershop.ProductCatalogService/GetProduct",
+      "prometheus": {
+        "request_rate": 0.0,
+        "error_rate": 0.0,
+        "p50_ms": 0.0,
+        "p99_ms": 0.0,
+        "cpu_cores": 0.0,
+        "memory_mb": 0.0
+      }
+    },
+    {
+      "service": "currencyservice.default",
+      "severity": "high",
+      "bottleneck_score": 12.0885,
+      "bottleneck_score_adj": 12.0885,
+      "risk_score": 0.8232,
+      "reasons": [
+        "high tail latency \u2014 p99/p50 = 5.1\u00d7 (p50=1.9ms, p99=9.8ms)",
+        "high fan-in \u2014 AIS=2 callers, 1 replica(s) \u2192 effective AIS/replica = 2.00"
+      ],
+      "latency": {
+        "p50_ms": 1.91,
+        "p95_ms": 4.814,
+        "p99_ms": 9.772,
+        "mean_ms": 2.484
+      },
+      "coupling": {
+        "ais": 2,
+        "ads": 0,
+        "acs": 0,
+        "sdp": 0.0
+      },
+      "cohesion": {
+        "sidc": 0.5,
+        "siuc": 0.593,
+        "tsic": 0.5465,
+        "num_endpoints": 2
+      },
+      "tail_ratio": 5.1162,
+      "replica_count": 1,
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "worst_endpoint": "/hipstershop.CurrencyService/Convert",
+      "prometheus": {
+        "request_rate": 0.0,
+        "error_rate": 0.0,
+        "p50_ms": 0.0,
+        "p99_ms": 0.0,
+        "cpu_cores": 0.0,
+        "memory_mb": 0.0
+      }
+    },
+    {
+      "service": "cartservice.default",
+      "severity": "high",
+      "bottleneck_score": 6.4073,
+      "bottleneck_score_adj": 6.4073,
+      "risk_score": 0.8127,
+      "reasons": [
+        "high tail latency \u2014 p99/p50 = 5.1\u00d7 (p50=2.8ms, p99=14.1ms)",
+        "high fan-in \u2014 AIS=2 callers, 1 replica(s) \u2192 effective AIS/replica = 2.00",
+        "low cohesion \u2014 TSIC=0.379 with 3 endpoints (SIDC=0.333, SIUC=0.424)"
+      ],
+      "latency": {
+        "p50_ms": 2.782,
+        "p95_ms": 7.415,
+        "p99_ms": 14.086,
+        "mean_ms": 3.469
+      },
+      "coupling": {
+        "ais": 2,
+        "ads": 0,
+        "acs": 0,
+        "sdp": 0.0
+      },
+      "cohesion": {
+        "sidc": 0.3333,
+        "siuc": 0.424,
+        "tsic": 0.3786,
+        "num_endpoints": 3
+      },
+      "tail_ratio": 5.0633,
+      "replica_count": 1,
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "worst_endpoint": "/hipstershop.CartService/GetCart",
+      "prometheus": {
+        "request_rate": 0.0,
+        "error_rate": 0.0,
+        "p50_ms": 0.0,
+        "p99_ms": 0.0,
+        "cpu_cores": 0.0,
+        "memory_mb": 0.0
+      }
+    },
+    {
+      "service": "shippingservice.default",
+      "severity": "high",
+      "bottleneck_score": 2.3029,
+      "bottleneck_score_adj": 2.3029,
+      "risk_score": 0.8365,
+      "reasons": [
+        "high tail latency \u2014 p99/p50 = 5.2\u00d7 (p50=1.1ms, p99=5.9ms)",
+        "high fan-in \u2014 AIS=2 callers, 1 replica(s) \u2192 effective AIS/replica = 2.00"
+      ],
+      "latency": {
+        "p50_ms": 1.139,
+        "p95_ms": 2.87,
+        "p99_ms": 5.903,
+        "mean_ms": 1.392
+      },
+      "coupling": {
+        "ais": 2,
+        "ads": 0,
+        "acs": 0,
+        "sdp": 0.0
+      },
+      "cohesion": {
+        "sidc": 0.5,
+        "siuc": 0.4837,
+        "tsic": 0.4919,
+        "num_endpoints": 2
+      },
+      "tail_ratio": 5.1826,
+      "replica_count": 1,
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "worst_endpoint": "/hipstershop.ShippingService/GetQuote",
+      "prometheus": {
+        "request_rate": 0.0,
+        "error_rate": 0.0,
+        "p50_ms": 0.0,
+        "p99_ms": 0.0,
+        "cpu_cores": 0.0,
+        "memory_mb": 0.0
+      }
+    },
+    {
+      "service": "recommendationservice.default",
+      "severity": "medium",
+      "bottleneck_score": 1.8924,
+      "bottleneck_score_adj": 1.8924,
+      "risk_score": 0.1942,
+      "reasons": [
+        "high tail latency \u2014 p99/p50 = 2.9\u00d7 (p50=7.1ms, p99=21.0ms)"
+      ],
+      "latency": {
+        "p50_ms": 7.137,
+        "p95_ms": 12.877,
+        "p99_ms": 20.994,
+        "mean_ms": 7.941
+      },
+      "coupling": {
+        "ais": 1,
+        "ads": 1,
+        "acs": 1,
+        "sdp": 0.5
+      },
+      "cohesion": {
+        "sidc": 1.0,
+        "siuc": 1.0,
+        "tsic": 1.0,
+        "num_endpoints": 1
+      },
+      "tail_ratio": 2.9416,
+      "replica_count": 1,
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "worst_endpoint": "/hipstershop.RecommendationService/ListRecommendations",
+      "prometheus": {
+        "request_rate": 0.0,
+        "error_rate": 0.0,
+        "p50_ms": 0.0,
+        "p99_ms": 0.0,
+        "cpu_cores": 0.0,
+        "memory_mb": 0.0
+      }
+    }
+  ],
+  "endpoint_bottlenecks": [
+    {
+      "endpoint": "productcatalogservice.default:/hipstershop.ProductCatalogService/GetProduct",
+      "service": "productcatalogservice.default",
+      "operation": "/hipstershop.ProductCatalogService/GetProduct",
+      "severity": "high",
+      "bottleneck_score": 15.6177,
+      "bottleneck_score_adj": 15.6177,
+      "risk_score": 0.8636,
+      "reasons": [
+        "high tail latency \u2014 p99/p50 = 5.3\u00d7 (p50=0.9ms, p99=4.7ms)",
+        "high fan-in \u2014 AIS=2 caller(s), 1 replica(s)"
+      ],
+      "latency": {
+        "p50_ms": 0.88,
+        "p95_ms": 2.073,
+        "p99_ms": 4.68,
+        "mean_ms": 1.262
+      },
+      "coupling": {
+        "ais": 2,
+        "ads": 0,
+        "acs": 0,
+        "sdp": 0.0,
+        "ais_adjusted": 2.0
+      },
+      "tail_ratio": 5.3182,
+      "call_count": 881,
+      "request_rate": 1.4683,
+      "error_rate": 0.0,
+      "replica_count": 1
+    },
+    {
+      "endpoint": "currencyservice.default:/hipstershop.CurrencyService/Convert",
+      "service": "currencyservice.default",
+      "operation": "/hipstershop.CurrencyService/Convert",
+      "severity": "high",
+      "bottleneck_score": 12.0885,
+      "bottleneck_score_adj": 12.0885,
+      "risk_score": 0.7556,
+      "reasons": [
+        "high tail latency \u2014 p99/p50 = 4.8\u00d7 (p50=1.9ms, p99=8.9ms)",
+        "high fan-in \u2014 AIS=2 caller(s), 1 replica(s)"
+      ],
+      "latency": {
+        "p50_ms": 1.87,
+        "p95_ms": 4.918,
+        "p99_ms": 8.935,
+        "mean_ms": 2.451
+      },
+      "coupling": {
+        "ais": 2,
+        "ads": 0,
+        "acs": 0,
+        "sdp": 0.0,
+        "ais_adjusted": 2.0
+      },
+      "tail_ratio": 4.7781,
+      "call_count": 759,
+      "request_rate": 1.265,
+      "error_rate": 0.0,
+      "replica_count": 1
+    },
+    {
+      "endpoint": "cartservice.default:/hipstershop.CartService/GetCart",
+      "service": "cartservice.default",
+      "operation": "/hipstershop.CartService/GetCart",
+      "severity": "high",
+      "bottleneck_score": 6.4073,
+      "bottleneck_score_adj": 6.4073,
+      "risk_score": 0.6717,
+      "reasons": [
+        "high tail latency \u2014 p99/p50 = 4.4\u00d7 (p50=2.7ms, p99=11.8ms)",
+        "high fan-in \u2014 AIS=2 caller(s), 1 replica(s)"
+      ],
+      "latency": {
+        "p50_ms": 2.707,
+        "p95_ms": 6.585,
+        "p99_ms": 11.799,
+        "mean_ms": 3.267
+      },
+      "coupling": {
+        "ais": 2,
+        "ads": 0,
+        "acs": 0,
+        "sdp": 0.0,
+        "ais_adjusted": 2.0
+      },
+      "tail_ratio": 4.3587,
+      "call_count": 441,
+      "request_rate": 0.735,
+      "error_rate": 0.0,
+      "replica_count": 1
+    },
+    {
+      "endpoint": "productcatalogservice.default:/hipstershop.ProductCatalogService/ListProducts",
+      "service": "productcatalogservice.default",
+      "operation": "/hipstershop.ProductCatalogService/ListProducts",
+      "severity": "high",
+      "bottleneck_score": 5.9499,
+      "bottleneck_score_adj": 5.9499,
+      "risk_score": 0.6815,
+      "reasons": [
+        "high tail latency \u2014 p99/p50 = 4.4\u00d7 (p50=1.0ms, p99=4.4ms)",
+        "high fan-in \u2014 AIS=2 caller(s), 1 replica(s)"
+      ],
+      "latency": {
+        "p50_ms": 1.009,
+        "p95_ms": 2.325,
+        "p99_ms": 4.447,
+        "mean_ms": 1.206
+      },
+      "coupling": {
+        "ais": 2,
+        "ads": 0,
+        "acs": 0,
+        "sdp": 0.0,
+        "ais_adjusted": 2.0
+      },
+      "tail_ratio": 4.4073,
+      "call_count": 405,
+      "request_rate": 0.675,
+      "error_rate": 0.0,
+      "replica_count": 1
+    },
+    {
+      "endpoint": "currencyservice.default:/hipstershop.CurrencyService/GetSupportedCurrencies",
+      "service": "currencyservice.default",
+      "operation": "/hipstershop.CurrencyService/GetSupportedCurrencies",
+      "severity": "high",
+      "bottleneck_score": 3.7956,
+      "bottleneck_score_adj": 3.7956,
+      "risk_score": 0.7659,
+      "reasons": [
+        "high tail latency \u2014 p99/p50 = 8.7\u00d7 (p50=2.0ms, p99=17.6ms)"
+      ],
+      "latency": {
+        "p50_ms": 2.027,
+        "p95_ms": 4.722,
+        "p99_ms": 17.552,
+        "mean_ms": 2.579
+      },
+      "coupling": {
+        "ais": 1,
+        "ads": 0,
+        "acs": 0,
+        "sdp": 0.0,
+        "ais_adjusted": 1.0
+      },
+      "tail_ratio": 8.6591,
+      "call_count": 263,
+      "request_rate": 0.4383,
+      "error_rate": 0.0,
+      "replica_count": 1
+    }
+  ],
+  "all_service_scores": [
+    {
+      "service": "productcatalogservice.default",
+      "bottleneck_score": 15.6177,
+      "risk_score": 1.1952,
+      "tsic": 0.5782,
+      "severity": "high"
+    },
+    {
+      "service": "currencyservice.default",
+      "bottleneck_score": 12.0885,
+      "risk_score": 0.8232,
+      "tsic": 0.5465,
+      "severity": "high"
+    },
+    {
+      "service": "cartservice.default",
+      "bottleneck_score": 6.4073,
+      "risk_score": 0.8127,
+      "tsic": 0.3786,
+      "severity": "high"
+    },
+    {
+      "service": "shippingservice.default",
+      "bottleneck_score": 2.3029,
+      "risk_score": 0.8365,
+      "tsic": 0.4919,
+      "severity": "high"
+    },
+    {
+      "service": "recommendationservice.default",
+      "bottleneck_score": 1.8924,
+      "risk_score": 0.1942,
+      "tsic": 1.0,
+      "severity": "medium"
+    },
+    {
+      "service": "adservice.default",
+      "bottleneck_score": 1.7669,
+      "risk_score": 0.2487,
+      "tsic": 1.0,
+      "severity": "medium"
+    },
+    {
+      "service": "frontend.default",
+      "bottleneck_score": 1.4918,
+      "risk_score": 0.0,
+      "tsic": 0.3576,
+      "severity": "low"
+    },
+    {
+      "service": "emailservice.default",
+      "bottleneck_score": 0.1352,
+      "risk_score": 0.3269,
+      "tsic": 1.0,
+      "severity": "high"
+    },
+    {
+      "service": "paymentservice.default",
+      "bottleneck_score": 0.0553,
+      "risk_score": 0.0843,
+      "tsic": 1.0,
+      "severity": "low"
+    },
+    {
+      "service": "checkoutservice.default",
+      "bottleneck_score": 0.0515,
+      "risk_score": 0.0628,
+      "tsic": 1.0,
+      "severity": "low"
+    }
+  ],
+  "critical_path": {
+    "path": [
+      "frontend.default",
+      "checkoutservice.default",
+      "cartservice.default"
+    ],
+    "latencies_ms": [
+      199.741,
+      88.849,
+      14.086
+    ],
+    "total_p99_ms": 302.676,
+    "entry_points": [
+      "frontend.default"
+    ]
+  },
+  "thresholds": {
+    "tail_ratio": 2.0,
+    "high_ais": 2,
+    "high_error": 0.01,
+    "low_cohesion": 0.4
+  }
+}

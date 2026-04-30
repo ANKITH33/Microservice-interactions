@@ -1,0 +1,714 @@
+{
+  "nodes": [
+    {
+      "id": "adservice.default:/hipstershop.AdService/GetAds",
+      "service": "adservice.default",
+      "operation": "/hipstershop.AdService/GetAds",
+      "call_count": 304,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.323,
+        "p95_ms": 6.456,
+        "p99_ms": 8.101,
+        "mean_ms": 2.989,
+        "max_ms": 57.351
+      },
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "cartservice.default:/hipstershop.CartService/GetCart",
+      "service": "cartservice.default",
+      "operation": "/hipstershop.CartService/GetCart",
+      "call_count": 441,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.707,
+        "p95_ms": 6.585,
+        "p99_ms": 11.799,
+        "mean_ms": 3.267,
+        "max_ms": 16.335
+      },
+      "ais": 2,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "cartservice.default:/hipstershop.CartService/EmptyCart",
+      "service": "cartservice.default",
+      "operation": "/hipstershop.CartService/EmptyCart",
+      "call_count": 19,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.501,
+        "p95_ms": 7.86,
+        "p99_ms": 7.86,
+        "mean_ms": 2.827,
+        "max_ms": 7.86
+      },
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "cartservice.default:/hipstershop.CartService/AddItem",
+      "service": "cartservice.default",
+      "operation": "/hipstershop.CartService/AddItem",
+      "call_count": 56,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 3.934,
+        "p95_ms": 15.501,
+        "p99_ms": 19.61,
+        "mean_ms": 5.278,
+        "max_ms": 19.61
+      },
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "emailservice.default:/hipstershop.EmailService/SendOrderConfirmation",
+      "service": "emailservice.default",
+      "operation": "/hipstershop.EmailService/SendOrderConfirmation",
+      "call_count": 19,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.546,
+        "p95_ms": 10.87,
+        "p99_ms": 10.87,
+        "mean_ms": 3.226,
+        "max_ms": 10.87
+      },
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "shippingservice.default:/hipstershop.ShippingService/ShipOrder",
+      "service": "shippingservice.default",
+      "operation": "/hipstershop.ShippingService/ShipOrder",
+      "call_count": 19,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.051,
+        "p95_ms": 1.96,
+        "p99_ms": 1.96,
+        "mean_ms": 1.23,
+        "max_ms": 1.96
+      },
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "paymentservice.default:/hipstershop.PaymentService/Charge",
+      "service": "paymentservice.default",
+      "operation": "/hipstershop.PaymentService/Charge",
+      "call_count": 18,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.515,
+        "p95_ms": 4.635,
+        "p99_ms": 4.635,
+        "mean_ms": 2.781,
+        "max_ms": 4.635
+      },
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "currencyservice.default:/hipstershop.CurrencyService/Convert",
+      "service": "currencyservice.default",
+      "operation": "/hipstershop.CurrencyService/Convert",
+      "call_count": 759,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.87,
+        "p95_ms": 4.918,
+        "p99_ms": 8.935,
+        "mean_ms": 2.451,
+        "max_ms": 81.457
+      },
+      "ais": 2,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "shippingservice.default:/hipstershop.ShippingService/GetQuote",
+      "service": "shippingservice.default",
+      "operation": "/hipstershop.ShippingService/GetQuote",
+      "call_count": 136,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.162,
+        "p95_ms": 2.904,
+        "p99_ms": 5.903,
+        "mean_ms": 1.415,
+        "max_ms": 5.93
+      },
+      "ais": 2,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "productcatalogservice.default:/hipstershop.ProductCatalogService/GetProduct",
+      "service": "productcatalogservice.default",
+      "operation": "/hipstershop.ProductCatalogService/GetProduct",
+      "call_count": 881,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 0.88,
+        "p95_ms": 2.073,
+        "p99_ms": 4.68,
+        "mean_ms": 1.262,
+        "max_ms": 116.114
+      },
+      "ais": 2,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "checkoutservice.default:/hipstershop.CheckoutService/PlaceOrder",
+      "service": "checkoutservice.default",
+      "operation": "/hipstershop.CheckoutService/PlaceOrder",
+      "call_count": 19,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 54.584,
+        "p95_ms": 88.849,
+        "p99_ms": 88.849,
+        "mean_ms": 57.495,
+        "max_ms": 88.849
+      },
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "currencyservice.default:/hipstershop.CurrencyService/GetSupportedCurrencies",
+      "service": "currencyservice.default",
+      "operation": "/hipstershop.CurrencyService/GetSupportedCurrencies",
+      "call_count": 263,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.027,
+        "p95_ms": 4.722,
+        "p99_ms": 17.552,
+        "mean_ms": 2.579,
+        "max_ms": 25.195
+      },
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "recommendationservice.default:/hipstershop.RecommendationService/ListRecommendations",
+      "service": "recommendationservice.default",
+      "operation": "/hipstershop.RecommendationService/ListRecommendations",
+      "call_count": 386,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 7.137,
+        "p95_ms": 12.877,
+        "p99_ms": 20.994,
+        "mean_ms": 7.941,
+        "max_ms": 51.258
+      },
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "frontend.default:/product/{id}",
+      "service": "frontend.default",
+      "operation": "/product/{id}",
+      "call_count": 250,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 48.763,
+        "p95_ms": 99.46,
+        "p99_ms": 174.588,
+        "mean_ms": 55.174,
+        "max_ms": 191.128
+      },
+      "ais": 0,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "productcatalogservice.default:/hipstershop.ProductCatalogService/ListProducts",
+      "service": "productcatalogservice.default",
+      "operation": "/hipstershop.ProductCatalogService/ListProducts",
+      "call_count": 405,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.009,
+        "p95_ms": 2.325,
+        "p99_ms": 4.447,
+        "mean_ms": 1.206,
+        "max_ms": 10.902
+      },
+      "ais": 2,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "frontend.default:/",
+      "service": "frontend.default",
+      "operation": "/",
+      "call_count": 54,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 69.466,
+        "p95_ms": 208.692,
+        "p99_ms": 249.51,
+        "mean_ms": 89.276,
+        "max_ms": 249.51
+      },
+      "ais": 0,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "frontend.default:/cart",
+      "service": "frontend.default",
+      "operation": "/cart",
+      "call_count": 173,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 55.659,
+        "p95_ms": 105.068,
+        "p99_ms": 213.649,
+        "mean_ms": 52.62,
+        "max_ms": 224.43
+      },
+      "ais": 0,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "frontend.default:/cart/checkout",
+      "service": "frontend.default",
+      "operation": "/cart/checkout",
+      "call_count": 19,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 89.093,
+        "p95_ms": 158.575,
+        "p99_ms": 158.575,
+        "mean_ms": 96.557,
+        "max_ms": 158.575
+      },
+      "ais": 0,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "id": "frontend.default:/setCurrency",
+      "service": "frontend.default",
+      "operation": "/setCurrency",
+      "call_count": 37,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 0.991,
+        "p95_ms": 2.473,
+        "p99_ms": 3.048,
+        "mean_ms": 1.182,
+        "max_ms": 3.048
+      },
+      "ais": 0,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    }
+  ],
+  "edges": [
+    {
+      "caller_id": "frontend.default:/hipstershop.AdService/GetAds",
+      "callee_id": "adservice.default:/hipstershop.AdService/GetAds",
+      "caller_svc": "frontend.default",
+      "caller_op": "/hipstershop.AdService/GetAds",
+      "callee_svc": "adservice.default",
+      "callee_op": "/hipstershop.AdService/GetAds",
+      "call_count": 304,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.323,
+        "p95_ms": 6.456,
+        "p99_ms": 8.101,
+        "mean_ms": 2.989,
+        "max_ms": 57.351
+      }
+    },
+    {
+      "caller_id": "frontend.default:/hipstershop.CartService/GetCart",
+      "callee_id": "cartservice.default:/hipstershop.CartService/GetCart",
+      "caller_svc": "frontend.default",
+      "caller_op": "/hipstershop.CartService/GetCart",
+      "callee_svc": "cartservice.default",
+      "callee_op": "/hipstershop.CartService/GetCart",
+      "call_count": 420,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.707,
+        "p95_ms": 6.89,
+        "p99_ms": 11.799,
+        "mean_ms": 3.271,
+        "max_ms": 16.335
+      }
+    },
+    {
+      "caller_id": "checkoutservice.default:/hipstershop.CartService/EmptyCart",
+      "callee_id": "cartservice.default:/hipstershop.CartService/EmptyCart",
+      "caller_svc": "checkoutservice.default",
+      "caller_op": "/hipstershop.CartService/EmptyCart",
+      "callee_svc": "cartservice.default",
+      "callee_op": "/hipstershop.CartService/EmptyCart",
+      "call_count": 19,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.501,
+        "p95_ms": 7.86,
+        "p99_ms": 7.86,
+        "mean_ms": 2.827,
+        "max_ms": 7.86
+      }
+    },
+    {
+      "caller_id": "checkoutservice.default:/hipstershop.CartService/GetCart",
+      "callee_id": "cartservice.default:/hipstershop.CartService/GetCart",
+      "caller_svc": "checkoutservice.default",
+      "caller_op": "/hipstershop.CartService/GetCart",
+      "callee_svc": "cartservice.default",
+      "callee_op": "/hipstershop.CartService/GetCart",
+      "call_count": 19,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.904,
+        "p95_ms": 5.99,
+        "p99_ms": 5.99,
+        "mean_ms": 3.257,
+        "max_ms": 5.99
+      }
+    },
+    {
+      "caller_id": "frontend.default:/hipstershop.CartService/AddItem",
+      "callee_id": "cartservice.default:/hipstershop.CartService/AddItem",
+      "caller_svc": "frontend.default",
+      "caller_op": "/hipstershop.CartService/AddItem",
+      "callee_svc": "cartservice.default",
+      "callee_op": "/hipstershop.CartService/AddItem",
+      "call_count": 56,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 3.934,
+        "p95_ms": 15.501,
+        "p99_ms": 19.61,
+        "mean_ms": 5.278,
+        "max_ms": 19.61
+      }
+    },
+    {
+      "caller_id": "checkoutservice.default:/hipstershop.EmailService/SendOrderConfirmation",
+      "callee_id": "emailservice.default:/hipstershop.EmailService/SendOrderConfirmation",
+      "caller_svc": "checkoutservice.default",
+      "caller_op": "/hipstershop.EmailService/SendOrderConfirmation",
+      "callee_svc": "emailservice.default",
+      "callee_op": "/hipstershop.EmailService/SendOrderConfirmation",
+      "call_count": 18,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.676,
+        "p95_ms": 10.87,
+        "p99_ms": 10.87,
+        "mean_ms": 3.277,
+        "max_ms": 10.87
+      }
+    },
+    {
+      "caller_id": "checkoutservice.default:/hipstershop.ShippingService/ShipOrder",
+      "callee_id": "shippingservice.default:/hipstershop.ShippingService/ShipOrder",
+      "caller_svc": "checkoutservice.default",
+      "caller_op": "/hipstershop.ShippingService/ShipOrder",
+      "callee_svc": "shippingservice.default",
+      "callee_op": "/hipstershop.ShippingService/ShipOrder",
+      "call_count": 18,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.051,
+        "p95_ms": 1.96,
+        "p99_ms": 1.96,
+        "mean_ms": 1.225,
+        "max_ms": 1.96
+      }
+    },
+    {
+      "caller_id": "checkoutservice.default:/hipstershop.PaymentService/Charge",
+      "callee_id": "paymentservice.default:/hipstershop.PaymentService/Charge",
+      "caller_svc": "checkoutservice.default",
+      "caller_op": "/hipstershop.PaymentService/Charge",
+      "callee_svc": "paymentservice.default",
+      "callee_op": "/hipstershop.PaymentService/Charge",
+      "call_count": 17,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.515,
+        "p95_ms": 4.635,
+        "p99_ms": 4.635,
+        "mean_ms": 2.854,
+        "max_ms": 4.635
+      }
+    },
+    {
+      "caller_id": "checkoutservice.default:/hipstershop.CurrencyService/Convert",
+      "callee_id": "currencyservice.default:/hipstershop.CurrencyService/Convert",
+      "caller_svc": "checkoutservice.default",
+      "caller_op": "/hipstershop.CurrencyService/Convert",
+      "callee_svc": "currencyservice.default",
+      "callee_op": "/hipstershop.CurrencyService/Convert",
+      "call_count": 67,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.069,
+        "p95_ms": 5.244,
+        "p99_ms": 12.785,
+        "mean_ms": 2.683,
+        "max_ms": 12.785
+      }
+    },
+    {
+      "caller_id": "checkoutservice.default:/hipstershop.ShippingService/GetQuote",
+      "callee_id": "shippingservice.default:/hipstershop.ShippingService/GetQuote",
+      "caller_svc": "checkoutservice.default",
+      "caller_op": "/hipstershop.ShippingService/GetQuote",
+      "callee_svc": "shippingservice.default",
+      "callee_op": "/hipstershop.ShippingService/GetQuote",
+      "call_count": 18,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.246,
+        "p95_ms": 5.93,
+        "p99_ms": 5.93,
+        "mean_ms": 1.603,
+        "max_ms": 5.93
+      }
+    },
+    {
+      "caller_id": "checkoutservice.default:/hipstershop.ProductCatalogService/GetProduct",
+      "callee_id": "productcatalogservice.default:/hipstershop.ProductCatalogService/GetProduct",
+      "caller_svc": "checkoutservice.default",
+      "caller_op": "/hipstershop.ProductCatalogService/GetProduct",
+      "callee_svc": "productcatalogservice.default",
+      "callee_op": "/hipstershop.ProductCatalogService/GetProduct",
+      "call_count": 48,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.013,
+        "p95_ms": 2.86,
+        "p99_ms": 4.68,
+        "mean_ms": 1.253,
+        "max_ms": 4.68
+      }
+    },
+    {
+      "caller_id": "frontend.default:/hipstershop.CheckoutService/PlaceOrder",
+      "callee_id": "checkoutservice.default:/hipstershop.CheckoutService/PlaceOrder",
+      "caller_svc": "frontend.default",
+      "caller_op": "/hipstershop.CheckoutService/PlaceOrder",
+      "callee_svc": "checkoutservice.default",
+      "callee_op": "/hipstershop.CheckoutService/PlaceOrder",
+      "call_count": 18,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 58.572,
+        "p95_ms": 88.849,
+        "p99_ms": 88.849,
+        "mean_ms": 58.572,
+        "max_ms": 88.849
+      }
+    },
+    {
+      "caller_id": "frontend.default:/hipstershop.CurrencyService/Convert",
+      "callee_id": "currencyservice.default:/hipstershop.CurrencyService/Convert",
+      "caller_svc": "frontend.default",
+      "caller_op": "/hipstershop.CurrencyService/Convert",
+      "callee_svc": "currencyservice.default",
+      "callee_op": "/hipstershop.CurrencyService/Convert",
+      "call_count": 692,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.856,
+        "p95_ms": 4.732,
+        "p99_ms": 8.935,
+        "mean_ms": 2.428,
+        "max_ms": 81.457
+      }
+    },
+    {
+      "caller_id": "frontend.default:/hipstershop.CurrencyService/GetSupportedCurrencies",
+      "callee_id": "currencyservice.default:/hipstershop.CurrencyService/GetSupportedCurrencies",
+      "caller_svc": "frontend.default",
+      "caller_op": "/hipstershop.CurrencyService/GetSupportedCurrencies",
+      "callee_svc": "currencyservice.default",
+      "callee_op": "/hipstershop.CurrencyService/GetSupportedCurrencies",
+      "call_count": 263,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.027,
+        "p95_ms": 4.722,
+        "p99_ms": 17.552,
+        "mean_ms": 2.579,
+        "max_ms": 25.195
+      }
+    },
+    {
+      "caller_id": "frontend.default:/hipstershop.ProductCatalogService/GetProduct",
+      "callee_id": "productcatalogservice.default:/hipstershop.ProductCatalogService/GetProduct",
+      "caller_svc": "frontend.default",
+      "caller_op": "/hipstershop.ProductCatalogService/GetProduct",
+      "callee_svc": "productcatalogservice.default",
+      "callee_op": "/hipstershop.ProductCatalogService/GetProduct",
+      "call_count": 833,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 0.872,
+        "p95_ms": 2.072,
+        "p99_ms": 4.617,
+        "mean_ms": 1.262,
+        "max_ms": 116.114
+      }
+    },
+    {
+      "caller_id": "frontend.default:/hipstershop.RecommendationService/ListRecommendations",
+      "callee_id": "recommendationservice.default:/hipstershop.RecommendationService/ListRecommendations",
+      "caller_svc": "frontend.default",
+      "caller_op": "/hipstershop.RecommendationService/ListRecommendations",
+      "callee_svc": "recommendationservice.default",
+      "callee_op": "/hipstershop.RecommendationService/ListRecommendations",
+      "call_count": 385,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 7.137,
+        "p95_ms": 12.877,
+        "p99_ms": 20.994,
+        "mean_ms": 7.946,
+        "max_ms": 51.258
+      }
+    },
+    {
+      "caller_id": "frontend.default:/hipstershop.ProductCatalogService/ListProducts",
+      "callee_id": "productcatalogservice.default:/hipstershop.ProductCatalogService/ListProducts",
+      "caller_svc": "frontend.default",
+      "caller_op": "/hipstershop.ProductCatalogService/ListProducts",
+      "callee_svc": "productcatalogservice.default",
+      "callee_op": "/hipstershop.ProductCatalogService/ListProducts",
+      "call_count": 20,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 0.972,
+        "p95_ms": 4.447,
+        "p99_ms": 4.447,
+        "mean_ms": 1.338,
+        "max_ms": 4.447
+      }
+    },
+    {
+      "caller_id": "frontend.default:/hipstershop.ShippingService/GetQuote",
+      "callee_id": "shippingservice.default:/hipstershop.ShippingService/GetQuote",
+      "caller_svc": "frontend.default",
+      "caller_op": "/hipstershop.ShippingService/GetQuote",
+      "callee_svc": "shippingservice.default",
+      "callee_op": "/hipstershop.ShippingService/GetQuote",
+      "call_count": 117,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.111,
+        "p95_ms": 2.87,
+        "p99_ms": 5.635,
+        "mean_ms": 1.389,
+        "max_ms": 5.903
+      }
+    },
+    {
+      "caller_id": "recommendationservice.default:/hipstershop.ProductCatalogService/ListProducts",
+      "callee_id": "productcatalogservice.default:/hipstershop.ProductCatalogService/ListProducts",
+      "caller_svc": "recommendationservice.default",
+      "caller_op": "/hipstershop.ProductCatalogService/ListProducts",
+      "callee_svc": "productcatalogservice.default",
+      "callee_op": "/hipstershop.ProductCatalogService/ListProducts",
+      "call_count": 385,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.01,
+        "p95_ms": 2.227,
+        "p99_ms": 4.803,
+        "mean_ms": 1.199,
+        "max_ms": 10.902
+      }
+    }
+  ],
+  "summary": {
+    "total_endpoints": 19,
+    "total_edges": 19,
+    "min_edge_calls": 10
+  }
+}

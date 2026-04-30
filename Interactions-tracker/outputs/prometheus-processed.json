@@ -1,0 +1,402 @@
+{
+  "services": [
+    {
+      "service": "adservice",
+      "request_rate": 2.131,
+      "error_rate": 0.0,
+      "p50_ms": 3.233,
+      "p95_ms": 7.786,
+      "p99_ms": 9.843,
+      "cpu_cores": 0.011352,
+      "memory_bytes": 137580544.0,
+      "memory_mb": 131.21
+    },
+    {
+      "service": "cartservice",
+      "request_rate": 3.6495,
+      "error_rate": 0.0,
+      "p50_ms": 3.273,
+      "p95_ms": 9.006,
+      "p99_ms": 20.397,
+      "cpu_cores": 0.015386,
+      "memory_bytes": 102760448.0,
+      "memory_mb": 98.0
+    },
+    {
+      "service": "checkoutservice",
+      "request_rate": 0.1405,
+      "error_rate": 0.0,
+      "p50_ms": 56.818,
+      "p95_ms": 95.682,
+      "p99_ms": 99.136,
+      "cpu_cores": 0.008744,
+      "memory_bytes": 59883520.0,
+      "memory_mb": 57.11
+    },
+    {
+      "service": "currencyservice",
+      "request_rate": 11.3087,
+      "error_rate": 0.0,
+      "p50_ms": 3.127,
+      "p95_ms": 6.083,
+      "p99_ms": 14.95,
+      "cpu_cores": 0.023115,
+      "memory_bytes": 88866816.0,
+      "memory_mb": 84.75
+    },
+    {
+      "service": "emailservice",
+      "request_rate": 0.139,
+      "error_rate": 0.0,
+      "p50_ms": 3.235,
+      "p95_ms": 10.75,
+      "p99_ms": 22.15,
+      "cpu_cores": 0.008608,
+      "memory_bytes": 88252416.0,
+      "memory_mb": 84.16
+    },
+    {
+      "service": "frontend-external",
+      "request_rate": 3.6838,
+      "error_rate": 0.6521,
+      "p50_ms": 62.273,
+      "p95_ms": 177.093,
+      "p99_ms": 235.419,
+      "cpu_cores": 0.0,
+      "memory_bytes": 0.0,
+      "memory_mb": 0.0
+    },
+    {
+      "service": "paymentservice",
+      "request_rate": 0.1395,
+      "error_rate": 0.0,
+      "p50_ms": 3.0,
+      "p95_ms": 4.8,
+      "p99_ms": 4.96,
+      "cpu_cores": 0.007184,
+      "memory_bytes": 72749056.0,
+      "memory_mb": 69.38
+    },
+    {
+      "service": "productcatalogservice",
+      "request_rate": 20.9352,
+      "error_rate": 0.0,
+      "p50_ms": 2.407,
+      "p95_ms": 4.779,
+      "p99_ms": 5.38,
+      "cpu_cores": 0.025232,
+      "memory_bytes": 60018688.0,
+      "memory_mb": 57.24
+    },
+    {
+      "service": "recommendationservice",
+      "request_rate": 2.7117,
+      "error_rate": 0.0,
+      "p50_ms": 7.957,
+      "p95_ms": 20.618,
+      "p99_ms": 24.545,
+      "cpu_cores": 0.017706,
+      "memory_bytes": 86306816.0,
+      "memory_mb": 82.31
+    },
+    {
+      "service": "shippingservice",
+      "request_rate": 1.0757,
+      "error_rate": 0.0,
+      "p50_ms": 2.882,
+      "p95_ms": 4.935,
+      "p99_ms": 8.638,
+      "cpu_cores": 0.007542,
+      "memory_bytes": 58081280.0,
+      "memory_mb": 55.39
+    },
+    {
+      "service": "frontend",
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p95_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.050841,
+      "memory_bytes": 60157952.0,
+      "memory_mb": 57.37
+    },
+    {
+      "service": "redis-cart",
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p95_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.008931,
+      "memory_bytes": 50315264.0,
+      "memory_mb": 47.98
+    },
+    {
+      "service": "loadgenerator",
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p95_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.012753,
+      "memory_bytes": 96763904.0,
+      "memory_mb": 92.28
+    }
+  ],
+  "service_index": {
+    "adservice": {
+      "service": "adservice",
+      "request_rate": 2.131,
+      "error_rate": 0.0,
+      "p50_ms": 3.233,
+      "p95_ms": 7.786,
+      "p99_ms": 9.843,
+      "cpu_cores": 0.011352,
+      "memory_bytes": 137580544.0,
+      "memory_mb": 131.21
+    },
+    "cartservice": {
+      "service": "cartservice",
+      "request_rate": 3.6495,
+      "error_rate": 0.0,
+      "p50_ms": 3.273,
+      "p95_ms": 9.006,
+      "p99_ms": 20.397,
+      "cpu_cores": 0.015386,
+      "memory_bytes": 102760448.0,
+      "memory_mb": 98.0
+    },
+    "checkoutservice": {
+      "service": "checkoutservice",
+      "request_rate": 0.1405,
+      "error_rate": 0.0,
+      "p50_ms": 56.818,
+      "p95_ms": 95.682,
+      "p99_ms": 99.136,
+      "cpu_cores": 0.008744,
+      "memory_bytes": 59883520.0,
+      "memory_mb": 57.11
+    },
+    "currencyservice": {
+      "service": "currencyservice",
+      "request_rate": 11.3087,
+      "error_rate": 0.0,
+      "p50_ms": 3.127,
+      "p95_ms": 6.083,
+      "p99_ms": 14.95,
+      "cpu_cores": 0.023115,
+      "memory_bytes": 88866816.0,
+      "memory_mb": 84.75
+    },
+    "emailservice": {
+      "service": "emailservice",
+      "request_rate": 0.139,
+      "error_rate": 0.0,
+      "p50_ms": 3.235,
+      "p95_ms": 10.75,
+      "p99_ms": 22.15,
+      "cpu_cores": 0.008608,
+      "memory_bytes": 88252416.0,
+      "memory_mb": 84.16
+    },
+    "frontend-external": {
+      "service": "frontend-external",
+      "request_rate": 3.6838,
+      "error_rate": 0.6521,
+      "p50_ms": 62.273,
+      "p95_ms": 177.093,
+      "p99_ms": 235.419,
+      "cpu_cores": 0.0,
+      "memory_bytes": 0.0,
+      "memory_mb": 0.0
+    },
+    "paymentservice": {
+      "service": "paymentservice",
+      "request_rate": 0.1395,
+      "error_rate": 0.0,
+      "p50_ms": 3.0,
+      "p95_ms": 4.8,
+      "p99_ms": 4.96,
+      "cpu_cores": 0.007184,
+      "memory_bytes": 72749056.0,
+      "memory_mb": 69.38
+    },
+    "productcatalogservice": {
+      "service": "productcatalogservice",
+      "request_rate": 20.9352,
+      "error_rate": 0.0,
+      "p50_ms": 2.407,
+      "p95_ms": 4.779,
+      "p99_ms": 5.38,
+      "cpu_cores": 0.025232,
+      "memory_bytes": 60018688.0,
+      "memory_mb": 57.24
+    },
+    "recommendationservice": {
+      "service": "recommendationservice",
+      "request_rate": 2.7117,
+      "error_rate": 0.0,
+      "p50_ms": 7.957,
+      "p95_ms": 20.618,
+      "p99_ms": 24.545,
+      "cpu_cores": 0.017706,
+      "memory_bytes": 86306816.0,
+      "memory_mb": 82.31
+    },
+    "shippingservice": {
+      "service": "shippingservice",
+      "request_rate": 1.0757,
+      "error_rate": 0.0,
+      "p50_ms": 2.882,
+      "p95_ms": 4.935,
+      "p99_ms": 8.638,
+      "cpu_cores": 0.007542,
+      "memory_bytes": 58081280.0,
+      "memory_mb": 55.39
+    },
+    "frontend": {
+      "service": "frontend",
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p95_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.050841,
+      "memory_bytes": 60157952.0,
+      "memory_mb": 57.37
+    },
+    "redis-cart": {
+      "service": "redis-cart",
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p95_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.008931,
+      "memory_bytes": 50315264.0,
+      "memory_mb": 47.98
+    },
+    "loadgenerator": {
+      "service": "loadgenerator",
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p95_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.012753,
+      "memory_bytes": 96763904.0,
+      "memory_mb": 92.28
+    }
+  },
+  "edges": [
+    {
+      "source": "frontend",
+      "destination": "adservice",
+      "response_code": "200",
+      "request_rate": 2.131
+    },
+    {
+      "source": "checkoutservice",
+      "destination": "cartservice",
+      "response_code": "200",
+      "request_rate": 0.2717
+    },
+    {
+      "source": "frontend",
+      "destination": "cartservice",
+      "response_code": "200",
+      "request_rate": 3.3779
+    },
+    {
+      "source": "frontend",
+      "destination": "checkoutservice",
+      "response_code": "200",
+      "request_rate": 0.1405
+    },
+    {
+      "source": "checkoutservice",
+      "destination": "currencyservice",
+      "response_code": "200",
+      "request_rate": 0.4902
+    },
+    {
+      "source": "frontend",
+      "destination": "currencyservice",
+      "response_code": "200",
+      "request_rate": 10.8185
+    },
+    {
+      "source": "checkoutservice",
+      "destination": "emailservice",
+      "response_code": "200",
+      "request_rate": 0.139
+    },
+    {
+      "source": "loadgenerator",
+      "destination": "frontend-external",
+      "response_code": "200",
+      "request_rate": 3.0324
+    },
+    {
+      "source": "loadgenerator",
+      "destination": "frontend-external",
+      "response_code": "302",
+      "request_rate": 0.6514
+    },
+    {
+      "source": "checkoutservice",
+      "destination": "paymentservice",
+      "response_code": "200",
+      "request_rate": 0.1395
+    },
+    {
+      "source": "checkoutservice",
+      "destination": "productcatalogservice",
+      "response_code": "200",
+      "request_rate": 0.3517
+    },
+    {
+      "source": "frontend",
+      "destination": "productcatalogservice",
+      "response_code": "200",
+      "request_rate": 17.8765
+    },
+    {
+      "source": "recommendationservice",
+      "destination": "productcatalogservice",
+      "response_code": "200",
+      "request_rate": 2.707
+    },
+    {
+      "source": "frontend",
+      "destination": "recommendationservice",
+      "response_code": "200",
+      "request_rate": 2.7117
+    },
+    {
+      "source": "checkoutservice",
+      "destination": "shippingservice",
+      "response_code": "200",
+      "request_rate": 0.2743
+    },
+    {
+      "source": "frontend",
+      "destination": "shippingservice",
+      "response_code": "200",
+      "request_rate": 0.8013
+    },
+    {
+      "source": "unknown",
+      "destination": "frontend-external",
+      "response_code": "200",
+      "request_rate": 0.0
+    },
+    {
+      "source": "unknown",
+      "destination": "frontend-external",
+      "response_code": "500",
+      "request_rate": 0.0
+    }
+  ]
+}

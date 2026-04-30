@@ -1,0 +1,372 @@
+[
+  {
+    "service": "productcatalogservice.default",
+    "call_count": 1286,
+    "replica_count": 1,
+    "error_rate": 0.0,
+    "latency": {
+      "p50_ms": 0.939,
+      "p95_ms": 2.162,
+      "p99_ms": 4.68,
+      "mean_ms": 1.244
+    },
+    "coupling": {
+      "ais": 3,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    "cohesion": {
+      "sidc": 0.5,
+      "siuc": 0.6564,
+      "tsic": 0.5782,
+      "num_endpoints": 2
+    },
+    "prometheus": {
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.0,
+      "memory_mb": 0.0
+    },
+    "tail_ratio": 4.984,
+    "bottleneck_score": 15.6177,
+    "bottleneck_score_adj": 15.6177,
+    "risk_score": 1.1952,
+    "worst_endpoint": "/hipstershop.ProductCatalogService/GetProduct"
+  },
+  {
+    "service": "currencyservice.default",
+    "call_count": 1022,
+    "replica_count": 1,
+    "error_rate": 0.0,
+    "latency": {
+      "p50_ms": 1.91,
+      "p95_ms": 4.814,
+      "p99_ms": 9.772,
+      "mean_ms": 2.484
+    },
+    "coupling": {
+      "ais": 2,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    "cohesion": {
+      "sidc": 0.5,
+      "siuc": 0.593,
+      "tsic": 0.5465,
+      "num_endpoints": 2
+    },
+    "prometheus": {
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.0,
+      "memory_mb": 0.0
+    },
+    "tail_ratio": 5.1162,
+    "bottleneck_score": 12.0885,
+    "bottleneck_score_adj": 12.0885,
+    "risk_score": 0.8232,
+    "worst_endpoint": "/hipstershop.CurrencyService/Convert"
+  },
+  {
+    "service": "cartservice.default",
+    "call_count": 516,
+    "replica_count": 1,
+    "error_rate": 0.0,
+    "latency": {
+      "p50_ms": 2.782,
+      "p95_ms": 7.415,
+      "p99_ms": 14.086,
+      "mean_ms": 3.469
+    },
+    "coupling": {
+      "ais": 2,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    "cohesion": {
+      "sidc": 0.3333,
+      "siuc": 0.424,
+      "tsic": 0.3786,
+      "num_endpoints": 3
+    },
+    "prometheus": {
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.0,
+      "memory_mb": 0.0
+    },
+    "tail_ratio": 5.0633,
+    "bottleneck_score": 6.4073,
+    "bottleneck_score_adj": 6.4073,
+    "risk_score": 0.8127,
+    "worst_endpoint": "/hipstershop.CartService/GetCart"
+  },
+  {
+    "service": "shippingservice.default",
+    "call_count": 155,
+    "replica_count": 1,
+    "error_rate": 0.0,
+    "latency": {
+      "p50_ms": 1.139,
+      "p95_ms": 2.87,
+      "p99_ms": 5.903,
+      "mean_ms": 1.392
+    },
+    "coupling": {
+      "ais": 2,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    "cohesion": {
+      "sidc": 0.5,
+      "siuc": 0.4837,
+      "tsic": 0.4919,
+      "num_endpoints": 2
+    },
+    "prometheus": {
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.0,
+      "memory_mb": 0.0
+    },
+    "tail_ratio": 5.1826,
+    "bottleneck_score": 2.3029,
+    "bottleneck_score_adj": 2.3029,
+    "risk_score": 0.8365,
+    "worst_endpoint": "/hipstershop.ShippingService/GetQuote"
+  },
+  {
+    "service": "recommendationservice.default",
+    "call_count": 386,
+    "replica_count": 1,
+    "error_rate": 0.0,
+    "latency": {
+      "p50_ms": 7.137,
+      "p95_ms": 12.877,
+      "p99_ms": 20.994,
+      "mean_ms": 7.941
+    },
+    "coupling": {
+      "ais": 1,
+      "ads": 1,
+      "acs": 1,
+      "sdp": 0.5
+    },
+    "cohesion": {
+      "sidc": 1.0,
+      "siuc": 1.0,
+      "tsic": 1.0,
+      "num_endpoints": 1
+    },
+    "prometheus": {
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.0,
+      "memory_mb": 0.0
+    },
+    "tail_ratio": 2.9416,
+    "bottleneck_score": 1.8924,
+    "bottleneck_score_adj": 1.8924,
+    "risk_score": 0.1942,
+    "worst_endpoint": "/hipstershop.RecommendationService/ListRecommendations"
+  },
+  {
+    "service": "adservice.default",
+    "call_count": 304,
+    "replica_count": 1,
+    "error_rate": 0.0,
+    "latency": {
+      "p50_ms": 2.323,
+      "p95_ms": 6.456,
+      "p99_ms": 8.101,
+      "mean_ms": 2.989
+    },
+    "coupling": {
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    "cohesion": {
+      "sidc": 1.0,
+      "siuc": 1.0,
+      "tsic": 1.0,
+      "num_endpoints": 1
+    },
+    "prometheus": {
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.0,
+      "memory_mb": 0.0
+    },
+    "tail_ratio": 3.4873,
+    "bottleneck_score": 1.7669,
+    "bottleneck_score_adj": 1.7669,
+    "risk_score": 0.2487,
+    "worst_endpoint": "/hipstershop.AdService/GetAds"
+  },
+  {
+    "service": "frontend.default",
+    "call_count": 533,
+    "replica_count": 1,
+    "error_rate": 0.0,
+    "latency": {
+      "p50_ms": 50.964,
+      "p95_ms": 124.166,
+      "p99_ms": 199.741,
+      "mean_ms": 55.527
+    },
+    "coupling": {
+      "ais": 0,
+      "ads": 7,
+      "acs": 0,
+      "sdp": 1.0
+    },
+    "cohesion": {
+      "sidc": 0.2,
+      "siuc": 0.5152,
+      "tsic": 0.3576,
+      "num_endpoints": 5
+    },
+    "prometheus": {
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.0,
+      "memory_mb": 0.0
+    },
+    "tail_ratio": 3.9193,
+    "bottleneck_score": 1.4918,
+    "bottleneck_score_adj": 0.1492,
+    "risk_score": 0.0,
+    "worst_endpoint": "/product/{id}"
+  },
+  {
+    "service": "emailservice.default",
+    "call_count": 19,
+    "replica_count": 1,
+    "error_rate": 0.0,
+    "latency": {
+      "p50_ms": 2.546,
+      "p95_ms": 10.87,
+      "p99_ms": 10.87,
+      "mean_ms": 3.226
+    },
+    "coupling": {
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    "cohesion": {
+      "sidc": 1.0,
+      "siuc": 1.0,
+      "tsic": 1.0,
+      "num_endpoints": 1
+    },
+    "prometheus": {
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.0,
+      "memory_mb": 0.0
+    },
+    "tail_ratio": 4.2694,
+    "bottleneck_score": 0.1352,
+    "bottleneck_score_adj": 0.1352,
+    "risk_score": 0.3269,
+    "worst_endpoint": "/hipstershop.EmailService/SendOrderConfirmation"
+  },
+  {
+    "service": "paymentservice.default",
+    "call_count": 18,
+    "replica_count": 1,
+    "error_rate": 0.0,
+    "latency": {
+      "p50_ms": 2.515,
+      "p95_ms": 4.635,
+      "p99_ms": 4.635,
+      "mean_ms": 2.781
+    },
+    "coupling": {
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    "cohesion": {
+      "sidc": 1.0,
+      "siuc": 1.0,
+      "tsic": 1.0,
+      "num_endpoints": 1
+    },
+    "prometheus": {
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.0,
+      "memory_mb": 0.0
+    },
+    "tail_ratio": 1.8429,
+    "bottleneck_score": 0.0553,
+    "bottleneck_score_adj": 0.0553,
+    "risk_score": 0.0843,
+    "worst_endpoint": "/hipstershop.PaymentService/Charge"
+  },
+  {
+    "service": "checkoutservice.default",
+    "call_count": 19,
+    "replica_count": 1,
+    "error_rate": 0.0,
+    "latency": {
+      "p50_ms": 54.584,
+      "p95_ms": 88.849,
+      "p99_ms": 88.849,
+      "mean_ms": 57.495
+    },
+    "coupling": {
+      "ais": 1,
+      "ads": 6,
+      "acs": 6,
+      "sdp": 0.8571
+    },
+    "cohesion": {
+      "sidc": 1.0,
+      "siuc": 1.0,
+      "tsic": 1.0,
+      "num_endpoints": 1
+    },
+    "prometheus": {
+      "request_rate": 0.0,
+      "error_rate": 0.0,
+      "p50_ms": 0.0,
+      "p99_ms": 0.0,
+      "cpu_cores": 0.0,
+      "memory_mb": 0.0
+    },
+    "tail_ratio": 1.6277,
+    "bottleneck_score": 0.0515,
+    "bottleneck_score_adj": 0.0515,
+    "risk_score": 0.0628,
+    "worst_endpoint": "/hipstershop.CheckoutService/PlaceOrder"
+  }
+]

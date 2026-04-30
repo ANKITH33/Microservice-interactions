@@ -1,0 +1,377 @@
+{
+  "nodes": [
+    {
+      "service": "adservice.default",
+      "call_count": 304,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.323,
+        "p95_ms": 6.456,
+        "p99_ms": 8.101,
+        "mean_ms": 2.989,
+        "max_ms": 57.351
+      },
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "service": "cartservice.default",
+      "call_count": 516,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.782,
+        "p95_ms": 7.415,
+        "p99_ms": 14.086,
+        "mean_ms": 3.469,
+        "max_ms": 19.61
+      },
+      "ais": 2,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "service": "emailservice.default",
+      "call_count": 19,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.546,
+        "p95_ms": 10.87,
+        "p99_ms": 10.87,
+        "mean_ms": 3.226,
+        "max_ms": 10.87
+      },
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "service": "shippingservice.default",
+      "call_count": 155,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.139,
+        "p95_ms": 2.87,
+        "p99_ms": 5.903,
+        "mean_ms": 1.392,
+        "max_ms": 5.93
+      },
+      "ais": 2,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "service": "paymentservice.default",
+      "call_count": 18,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.515,
+        "p95_ms": 4.635,
+        "p99_ms": 4.635,
+        "mean_ms": 2.781,
+        "max_ms": 4.635
+      },
+      "ais": 1,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "service": "currencyservice.default",
+      "call_count": 1022,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.91,
+        "p95_ms": 4.814,
+        "p99_ms": 9.772,
+        "mean_ms": 2.484,
+        "max_ms": 81.457
+      },
+      "ais": 2,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "service": "productcatalogservice.default",
+      "call_count": 1286,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 0.939,
+        "p95_ms": 2.162,
+        "p99_ms": 4.68,
+        "mean_ms": 1.244,
+        "max_ms": 116.114
+      },
+      "ais": 3,
+      "ads": 0,
+      "acs": 0,
+      "sdp": 0.0
+    },
+    {
+      "service": "checkoutservice.default",
+      "call_count": 19,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 54.584,
+        "p95_ms": 88.849,
+        "p99_ms": 88.849,
+        "mean_ms": 57.495,
+        "max_ms": 88.849
+      },
+      "ais": 1,
+      "ads": 6,
+      "acs": 6,
+      "sdp": 0.8571
+    },
+    {
+      "service": "recommendationservice.default",
+      "call_count": 386,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 7.137,
+        "p95_ms": 12.877,
+        "p99_ms": 20.994,
+        "mean_ms": 7.941,
+        "max_ms": 51.258
+      },
+      "ais": 1,
+      "ads": 1,
+      "acs": 1,
+      "sdp": 0.5
+    },
+    {
+      "service": "frontend.default",
+      "call_count": 533,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 50.964,
+        "p95_ms": 124.166,
+        "p99_ms": 199.741,
+        "mean_ms": 55.527,
+        "max_ms": 249.51
+      },
+      "ais": 0,
+      "ads": 7,
+      "acs": 0,
+      "sdp": 1.0
+    }
+  ],
+  "edges": [
+    {
+      "caller": "frontend.default",
+      "callee": "adservice.default",
+      "call_count": 304,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.323,
+        "p95_ms": 6.456,
+        "p99_ms": 8.101,
+        "mean_ms": 2.989,
+        "max_ms": 57.351
+      }
+    },
+    {
+      "caller": "frontend.default",
+      "callee": "cartservice.default",
+      "call_count": 476,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.79,
+        "p95_ms": 7.625,
+        "p99_ms": 15.121,
+        "mean_ms": 3.507,
+        "max_ms": 19.61
+      }
+    },
+    {
+      "caller": "checkoutservice.default",
+      "callee": "cartservice.default",
+      "call_count": 38,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.654,
+        "p95_ms": 5.99,
+        "p99_ms": 7.86,
+        "mean_ms": 3.042,
+        "max_ms": 7.86
+      }
+    },
+    {
+      "caller": "checkoutservice.default",
+      "callee": "emailservice.default",
+      "call_count": 18,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.676,
+        "p95_ms": 10.87,
+        "p99_ms": 10.87,
+        "mean_ms": 3.277,
+        "max_ms": 10.87
+      }
+    },
+    {
+      "caller": "checkoutservice.default",
+      "callee": "shippingservice.default",
+      "call_count": 36,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.222,
+        "p95_ms": 2.904,
+        "p99_ms": 5.93,
+        "mean_ms": 1.414,
+        "max_ms": 5.93
+      }
+    },
+    {
+      "caller": "checkoutservice.default",
+      "callee": "paymentservice.default",
+      "call_count": 17,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.515,
+        "p95_ms": 4.635,
+        "p99_ms": 4.635,
+        "mean_ms": 2.854,
+        "max_ms": 4.635
+      }
+    },
+    {
+      "caller": "checkoutservice.default",
+      "callee": "currencyservice.default",
+      "call_count": 67,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 2.069,
+        "p95_ms": 5.244,
+        "p99_ms": 12.785,
+        "mean_ms": 2.683,
+        "max_ms": 12.785
+      }
+    },
+    {
+      "caller": "checkoutservice.default",
+      "callee": "productcatalogservice.default",
+      "call_count": 48,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.013,
+        "p95_ms": 2.86,
+        "p99_ms": 4.68,
+        "mean_ms": 1.253,
+        "max_ms": 4.68
+      }
+    },
+    {
+      "caller": "frontend.default",
+      "callee": "checkoutservice.default",
+      "call_count": 18,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 58.572,
+        "p95_ms": 88.849,
+        "p99_ms": 88.849,
+        "mean_ms": 58.572,
+        "max_ms": 88.849
+      }
+    },
+    {
+      "caller": "frontend.default",
+      "callee": "currencyservice.default",
+      "call_count": 955,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.906,
+        "p95_ms": 4.732,
+        "p99_ms": 9.772,
+        "mean_ms": 2.47,
+        "max_ms": 81.457
+      }
+    },
+    {
+      "caller": "frontend.default",
+      "callee": "productcatalogservice.default",
+      "call_count": 853,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 0.873,
+        "p95_ms": 2.134,
+        "p99_ms": 4.617,
+        "mean_ms": 1.264,
+        "max_ms": 116.114
+      }
+    },
+    {
+      "caller": "frontend.default",
+      "callee": "recommendationservice.default",
+      "call_count": 385,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 7.137,
+        "p95_ms": 12.877,
+        "p99_ms": 20.994,
+        "mean_ms": 7.946,
+        "max_ms": 51.258
+      }
+    },
+    {
+      "caller": "frontend.default",
+      "callee": "shippingservice.default",
+      "call_count": 117,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.111,
+        "p95_ms": 2.87,
+        "p99_ms": 5.635,
+        "mean_ms": 1.389,
+        "max_ms": 5.903
+      }
+    },
+    {
+      "caller": "recommendationservice.default",
+      "callee": "productcatalogservice.default",
+      "call_count": 385,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.01,
+        "p95_ms": 2.227,
+        "p99_ms": 4.803,
+        "mean_ms": 1.199,
+        "max_ms": 10.902
+      }
+    }
+  ],
+  "summary": {
+    "total_services": 10,
+    "total_edges": 14,
+    "min_edge_calls": 10
+  }
+}
