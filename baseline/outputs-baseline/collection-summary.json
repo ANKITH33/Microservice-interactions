@@ -1,0 +1,122 @@
+{
+  "collected_at": "2026-04-30T06:55:36.835315Z",
+  "lookback_minutes": 10,
+  "zipkin": {
+    "services_found": 12,
+    "services": [
+      "adservice.default",
+      "cartservice.default",
+      "checkoutservice.default",
+      "currencyservice.default",
+      "emailservice.default",
+      "frontend.default",
+      "istio-ingressgateway.istio-system",
+      "loadgenerator.default",
+      "paymentservice.default",
+      "productcatalogservice.default",
+      "recommendationservice.default",
+      "shippingservice.default"
+    ],
+    "total_traces": 4280,
+    "dependency_links": 15,
+    "dependencies": [
+      {
+        "parent": "frontend.default",
+        "child": "productcatalogservice.default",
+        "callCount": 2571
+      },
+      {
+        "parent": "frontend.default",
+        "child": "cartservice.default",
+        "callCount": 481
+      },
+      {
+        "parent": "recommendationservice.default",
+        "child": "productcatalogservice.default",
+        "callCount": 389
+      },
+      {
+        "parent": "loadgenerator.default",
+        "child": "frontend.default",
+        "callCount": 536
+      },
+      {
+        "parent": "frontend.default",
+        "child": "recommendationservice.default",
+        "callCount": 388
+      },
+      {
+        "parent": "frontend.default",
+        "child": "currencyservice.default",
+        "callCount": 1570
+      },
+      {
+        "parent": "frontend.default",
+        "child": "adservice.default",
+        "callCount": 305
+      },
+      {
+        "parent": "frontend.default",
+        "child": "shippingservice.default",
+        "callCount": 117
+      },
+      {
+        "parent": "checkoutservice.default",
+        "child": "emailservice.default",
+        "callCount": 18
+      },
+      {
+        "parent": "checkoutservice.default",
+        "child": "cartservice.default",
+        "callCount": 38
+      },
+      {
+        "parent": "checkoutservice.default",
+        "child": "shippingservice.default",
+        "callCount": 36
+      },
+      {
+        "parent": "checkoutservice.default",
+        "child": "paymentservice.default",
+        "callCount": 17
+      },
+      {
+        "parent": "checkoutservice.default",
+        "child": "currencyservice.default",
+        "callCount": 67
+      },
+      {
+        "parent": "checkoutservice.default",
+        "child": "productcatalogservice.default",
+        "callCount": 48
+      },
+      {
+        "parent": "frontend.default",
+        "child": "checkoutservice.default",
+        "callCount": 18
+      }
+    ]
+  },
+  "prometheus": {
+    "queries_run": 9,
+    "queries": [
+      "request_rate",
+      "p50_latency",
+      "p95_latency",
+      "p99_latency",
+      "error_rate",
+      "cpu_usage",
+      "memory_usage",
+      "request_duration",
+      "total_requests"
+    ]
+  },
+  "files": [
+    "zipkin-services.json",
+    "zipkin-traces.json",
+    "zipkin-dependencies.json",
+    "prometheus-metrics.json",
+    "prometheus-metrics-range.json",
+    "collection-summary.json"
+  ]
+}

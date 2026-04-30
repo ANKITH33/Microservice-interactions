@@ -1,0 +1,77 @@
+[
+  {
+    "parent": "frontend.default",
+    "child": "productcatalogservice.default",
+    "callCount": 2571
+  },
+  {
+    "parent": "frontend.default",
+    "child": "cartservice.default",
+    "callCount": 481
+  },
+  {
+    "parent": "recommendationservice.default",
+    "child": "productcatalogservice.default",
+    "callCount": 389
+  },
+  {
+    "parent": "loadgenerator.default",
+    "child": "frontend.default",
+    "callCount": 536
+  },
+  {
+    "parent": "frontend.default",
+    "child": "recommendationservice.default",
+    "callCount": 388
+  },
+  {
+    "parent": "frontend.default",
+    "child": "currencyservice.default",
+    "callCount": 1570
+  },
+  {
+    "parent": "frontend.default",
+    "child": "adservice.default",
+    "callCount": 305
+  },
+  {
+    "parent": "frontend.default",
+    "child": "shippingservice.default",
+    "callCount": 117
+  },
+  {
+    "parent": "checkoutservice.default",
+    "child": "emailservice.default",
+    "callCount": 18
+  },
+  {
+    "parent": "checkoutservice.default",
+    "child": "cartservice.default",
+    "callCount": 38
+  },
+  {
+    "parent": "checkoutservice.default",
+    "child": "shippingservice.default",
+    "callCount": 36
+  },
+  {
+    "parent": "checkoutservice.default",
+    "child": "paymentservice.default",
+    "callCount": 17
+  },
+  {
+    "parent": "checkoutservice.default",
+    "child": "currencyservice.default",
+    "callCount": 67
+  },
+  {
+    "parent": "checkoutservice.default",
+    "child": "productcatalogservice.default",
+    "callCount": 48
+  },
+  {
+    "parent": "frontend.default",
+    "child": "checkoutservice.default",
+    "callCount": 18
+  }
+]

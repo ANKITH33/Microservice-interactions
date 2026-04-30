@@ -1,0 +1,14 @@
+[
+  "adservice.default",
+  "cartservice.default",
+  "checkoutservice.default",
+  "currencyservice.default",
+  "emailservice.default",
+  "frontend.default",
+  "istio-ingressgateway.istio-system",
+  "loadgenerator.default",
+  "paymentservice.default",
+  "productcatalogservice.default",
+  "recommendationservice.default",
+  "shippingservice.default"
+]
