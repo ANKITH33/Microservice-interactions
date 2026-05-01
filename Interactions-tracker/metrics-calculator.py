@@ -63,6 +63,7 @@ import statistics
 import subprocess
 from collections import defaultdict
 from pathlib import Path
+import math
 
 UPLOADS_DIR = Path(__file__).resolve().parent.parent / "baseline" / "outputs-baseline"
 OUTPUT_DIR           = Path(__file__).resolve().parent / "outputs"
@@ -271,22 +272,28 @@ def _apply_cp_weight_to_scores(
  
     Returns (bottleneck_score, bottleneck_score_adj) — both floats.
     """
-    if ep_cp_weight is None:
-        ep_cp_weight = {}
-    if svc_cp_weight is None:
-        svc_cp_weight = {}
- 
-    # Endpoint weight preferred; fall back to service weight
-    cp_weight = ep_cp_weight.get((svc, op), svc_cp_weight.get(svc, 0.0))
- 
-    base     = tail_ratio * max(ais, 1)            * req_rate
-    base_adj = tail_ratio * max(ais_adjusted, 0.1) * req_rate
-    multiplier = 1.0 + cp_weight
+    req_log = math.log1p(req_rate)
 
-    return (
-        round(base     * multiplier, 4),
-        round(base_adj * multiplier, 4),
-    )
+    # simple bounded normalization (no global stats needed)
+    tail_n = min(tail_ratio / 5.0, 1.0)        # assume 5 is bad tail
+    ais_n  = min(ais / 5.0, 1.0)               # cap AIS at 5
+    req_n  = min(req_log / math.log1p(50), 1.0)  # cap at ~50 rps
+
+    cp_weight = ep_cp_weight.get((svc, op), svc_cp_weight.get(svc, 0.0))
+
+    score = (
+        0.4 * tail_n +
+        0.3 * ais_n +
+        0.3 * req_n
+    ) * (1 + cp_weight)
+
+    score_adj = (
+        0.4 * tail_n +
+        0.3 * min(ais_adjusted / 5.0, 1.0) +
+        0.3 * req_n
+    ) * (1 + cp_weight)
+
+    return round(score * 100, 2), round(score_adj * 100, 2)
 
 def compute_endpoint_metrics(
     ep_agg:       list,
@@ -329,8 +336,8 @@ def compute_endpoint_metrics(
         ais     = ep["unique_callers"]
         ads     = ep["fanout_avg"]
         ads_int = round(ads)
-        total_coupling = ais + ads_int
-        acs = round(ais / total_coupling, 4) if total_coupling > 0 else 0.0
+
+        acs = ais * ads_int
 
         # ── Request rate ───────────────────────────────────────────────────
         pm        = prom_index.get(svc, prom_index.get(svc_short, {}))
@@ -549,8 +556,7 @@ def compute_service_metrics(
         # ── Coupling (service-level AIS, ADS, ACS) ─────────────────────────
         ais = fan_in.get(svc, fan_in.get(svc_short, 0))
         ads = fan_out.get(svc, fan_out.get(svc_short, 0))
-        total_coupling = ais + ads
-        acs = round(ais / total_coupling, 4) if total_coupling > 0 else 0.0
+        acs = ais * ads
 
         # ── Cohesion metrics ───────────────────────────────────────────────
         # SIUC: correctly computed as avg endpoint-usage ratio per consumer

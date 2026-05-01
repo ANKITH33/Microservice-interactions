@@ -3,8 +3,8 @@
     {
       "service": "productcatalogservice.default",
       "severity": "medium",
-      "bottleneck_score": 154.1098,
-      "bottleneck_score_adj": 154.1098,
+      "bottleneck_score": 73.29,
+      "bottleneck_score_adj": 73.29,
       "risk_score": 0.1944,
       "reasons": [],
       "latency": {
@@ -16,7 +16,7 @@
       "coupling": {
         "ais": 3,
         "ads": 0,
-        "acs": 1.0
+        "acs": 0
       },
       "cohesion": {
         "siuc": 0.6667,
@@ -49,8 +49,8 @@
     {
       "service": "currencyservice.default",
       "severity": "medium",
-      "bottleneck_score": 91.1641,
-      "bottleneck_score_adj": 91.1641,
+      "bottleneck_score": 63.64,
+      "bottleneck_score_adj": 63.64,
       "risk_score": 0.293,
       "reasons": [
         "high tail latency \u2014 p99/p50 = 2.5\u00d7 (p50=1.8ms, p99=3.6ms)"
@@ -64,7 +64,7 @@
       "coupling": {
         "ais": 2,
         "ads": 0,
-        "acs": 1.0
+        "acs": 0
       },
       "cohesion": {
         "siuc": 0.75,
@@ -97,8 +97,8 @@
     {
       "service": "cartservice.default",
       "severity": "low",
-      "bottleneck_score": 16.5751,
-      "bottleneck_score_adj": 16.5751,
+      "bottleneck_score": 40.42,
+      "bottleneck_score_adj": 40.42,
       "risk_score": 0.0979,
       "reasons": [],
       "latency": {
@@ -110,7 +110,7 @@
       "coupling": {
         "ais": 2,
         "ads": 0,
-        "acs": 1.0
+        "acs": 0
       },
       "cohesion": {
         "siuc": 0.6667,
@@ -141,60 +141,56 @@
       }
     },
     {
-      "service": "frontend.default",
+      "service": "adservice.default",
       "severity": "low",
-      "bottleneck_score": 11.1144,
-      "bottleneck_score_adj": 1.1114,
-      "risk_score": 0.0,
-      "reasons": [
-        "high tail latency \u2014 p99/p50 = 2.1\u00d7 (p50=47.7ms, p99=97.9ms)",
-        "low cohesion \u2014 TSIC=0.000 with 5 endpoints (SIDC=n/a, SIUC=0.000)",
-        "Prometheus error rate = 0.9263 req/s (control-plane view)"
-      ],
+      "bottleneck_score": 33.71,
+      "bottleneck_score_adj": 33.71,
+      "risk_score": 0.0919,
+      "reasons": [],
       "latency": {
-        "p50_ms": 47.717,
-        "p95_ms": 97.866,
-        "p99_ms": 97.866,
-        "mean_ms": 34.169
+        "p50_ms": 1.599,
+        "p95_ms": 2.803,
+        "p99_ms": 3.069,
+        "mean_ms": 1.738
       },
       "coupling": {
-        "ais": 0,
-        "ads": 7,
-        "acs": 0.0
+        "ais": 1,
+        "ads": 0,
+        "acs": 0
       },
       "cohesion": {
-        "siuc": 0.0,
+        "siuc": 1.0,
         "sidc": null,
-        "tsic": 0.0,
+        "tsic": 1.0,
         "sidc_note": "SIDC requires OpenAPI/schema similarity data unavailable from Zipkin/Prometheus.",
-        "num_endpoints": 5
+        "num_endpoints": 1
       },
-      "tail_ratio": 2.051,
+      "tail_ratio": 1.9193,
       "replica_count": 1,
-      "request_rate": 5.3614,
+      "request_rate": 3.1193,
       "error_rate": 0.0,
-      "worst_endpoint": "/",
+      "worst_endpoint": "/hipstershop.AdService/GetAds",
       "prometheus": {
-        "request_rate": 5.3614,
-        "total_requests": 1608.42,
-        "error_rate": 0.9263,
+        "request_rate": 3.1193,
+        "total_requests": 935.79,
+        "error_rate": 0.0,
         "error_5xx_rate": 0.0,
-        "error_4xx_rate": 0.9263,
+        "error_4xx_rate": 0.0,
         "retry_rate": 0.0,
         "timeout_rate": 0.0,
-        "p50_ms": 34.552,
-        "p99_ms": 95.188,
-        "cpu_cores": 0.094497,
-        "memory_mb": 122.48,
-        "slo_compliance_500ms": 0.9987,
+        "p50_ms": 3.039,
+        "p99_ms": 7.531,
+        "cpu_cores": 0.02485,
+        "memory_mb": 281.66,
+        "slo_compliance_500ms": 1.0,
         "retry_factor": 1.0
       }
     },
     {
       "service": "recommendationservice.default",
       "severity": "low",
-      "bottleneck_score": 6.6593,
-      "bottleneck_score_adj": 6.6593,
+      "bottleneck_score": 32.91,
+      "bottleneck_score_adj": 32.91,
       "risk_score": 0.0638,
       "reasons": [],
       "latency": {
@@ -206,7 +202,7 @@
       "coupling": {
         "ais": 1,
         "ads": 1,
-        "acs": 0.5
+        "acs": 1
       },
       "cohesion": {
         "siuc": 1.0,
@@ -243,8 +239,8 @@
       "service": "productcatalogservice.default",
       "operation": "/hipstershop.ProductCatalogService/GetProduct",
       "severity": "medium",
-      "bottleneck_score": 154.1098,
-      "bottleneck_score_adj": 154.1098,
+      "bottleneck_score": 73.29,
+      "bottleneck_score_adj": 73.29,
       "risk_score": 0.1944,
       "reasons": [],
       "latency": {
@@ -259,16 +255,16 @@
       "coupling": {
         "ais": 2,
         "ads": 0.0,
-        "acs": 1.0,
+        "acs": 0,
         "ais_adjusted": 2.0,
         "callers": [
           {
             "caller_svc": "checkoutservice.default",
-            "caller_op": "/hipstershop.ProductCatalogService/GetProduct"
+            "caller_op": null
           },
           {
             "caller_svc": "frontend.default",
-            "caller_op": "/hipstershop.ProductCatalogService/GetProduct"
+            "caller_op": null
           }
         ]
       },
@@ -283,8 +279,8 @@
       "service": "currencyservice.default",
       "operation": "/hipstershop.CurrencyService/Convert",
       "severity": "medium",
-      "bottleneck_score": 91.1641,
-      "bottleneck_score_adj": 91.1641,
+      "bottleneck_score": 63.64,
+      "bottleneck_score_adj": 63.64,
       "risk_score": 0.293,
       "reasons": [
         "high tail latency \u2014 p99/p50 = 2.5\u00d7 (p50=1.5ms, p99=3.6ms)"
@@ -301,16 +297,16 @@
       "coupling": {
         "ais": 2,
         "ads": 0.0,
-        "acs": 1.0,
+        "acs": 0,
         "ais_adjusted": 2.0,
         "callers": [
           {
             "caller_svc": "checkoutservice.default",
-            "caller_op": "/hipstershop.CurrencyService/Convert"
+            "caller_op": null
           },
           {
             "caller_svc": "frontend.default",
-            "caller_op": "/hipstershop.CurrencyService/Convert"
+            "caller_op": null
           }
         ]
       },
@@ -325,8 +321,8 @@
       "service": "productcatalogservice.default",
       "operation": "/hipstershop.ProductCatalogService/ListProducts",
       "severity": "low",
-      "bottleneck_score": 86.064,
-      "bottleneck_score_adj": 86.064,
+      "bottleneck_score": 52.46,
+      "bottleneck_score_adj": 52.46,
       "risk_score": 0.0819,
       "reasons": [],
       "latency": {
@@ -341,16 +337,16 @@
       "coupling": {
         "ais": 2,
         "ads": 0.0,
-        "acs": 1.0,
+        "acs": 0,
         "ais_adjusted": 2.0,
         "callers": [
           {
             "caller_svc": "frontend.default",
-            "caller_op": "/hipstershop.ProductCatalogService/ListProducts"
+            "caller_op": null
           },
           {
             "caller_svc": "recommendationservice.default",
-            "caller_op": "/hipstershop.ProductCatalogService/ListProducts"
+            "caller_op": null
           }
         ]
       },
@@ -365,8 +361,8 @@
       "service": "currencyservice.default",
       "operation": "/hipstershop.CurrencyService/GetSupportedCurrencies",
       "severity": "low",
-      "bottleneck_score": 27.4396,
-      "bottleneck_score_adj": 27.4396,
+      "bottleneck_score": 43.45,
+      "bottleneck_score_adj": 43.45,
       "risk_score": 0.0666,
       "reasons": [],
       "latency": {
@@ -381,12 +377,12 @@
       "coupling": {
         "ais": 1,
         "ads": 0.0,
-        "acs": 1.0,
+        "acs": 0,
         "ais_adjusted": 1.0,
         "callers": [
           {
             "caller_svc": "frontend.default",
-            "caller_op": "/hipstershop.CurrencyService/GetSupportedCurrencies"
+            "caller_op": null
           }
         ]
       },
@@ -401,8 +397,8 @@
       "service": "cartservice.default",
       "operation": "/hipstershop.CartService/GetCart",
       "severity": "low",
-      "bottleneck_score": 16.5751,
-      "bottleneck_score_adj": 16.5751,
+      "bottleneck_score": 40.42,
+      "bottleneck_score_adj": 40.42,
       "risk_score": 0.0979,
       "reasons": [],
       "latency": {
@@ -417,16 +413,16 @@
       "coupling": {
         "ais": 2,
         "ads": 0.0,
-        "acs": 1.0,
+        "acs": 0,
         "ais_adjusted": 2.0,
         "callers": [
           {
             "caller_svc": "checkoutservice.default",
-            "caller_op": "/hipstershop.CartService/GetCart"
+            "caller_op": null
           },
           {
             "caller_svc": "frontend.default",
-            "caller_op": "/hipstershop.CartService/GetCart"
+            "caller_op": null
           }
         ]
       },
@@ -440,70 +436,70 @@
   "all_service_scores": [
     {
       "service": "productcatalogservice.default",
-      "bottleneck_score": 154.1098,
+      "bottleneck_score": 73.29,
       "risk_score": 0.1944,
       "tsic": 0.6667,
       "severity": "medium"
     },
     {
       "service": "currencyservice.default",
-      "bottleneck_score": 91.1641,
+      "bottleneck_score": 63.64,
       "risk_score": 0.293,
       "tsic": 0.75,
       "severity": "medium"
     },
     {
       "service": "cartservice.default",
-      "bottleneck_score": 16.5751,
+      "bottleneck_score": 40.42,
       "risk_score": 0.0979,
       "tsic": 0.6667,
       "severity": "low"
     },
     {
-      "service": "frontend.default",
-      "bottleneck_score": 11.1144,
-      "risk_score": 0.0,
-      "tsic": 0.0,
-      "severity": "low"
-    },
-    {
-      "service": "recommendationservice.default",
-      "bottleneck_score": 6.6593,
-      "risk_score": 0.0638,
-      "tsic": 1.0,
-      "severity": "low"
-    },
-    {
       "service": "adservice.default",
-      "bottleneck_score": 6.277,
+      "bottleneck_score": 33.71,
       "risk_score": 0.0919,
       "tsic": 1.0,
       "severity": "low"
     },
     {
+      "service": "recommendationservice.default",
+      "bottleneck_score": 32.91,
+      "risk_score": 0.0638,
+      "tsic": 1.0,
+      "severity": "low"
+    },
+    {
       "service": "shippingservice.default",
-      "bottleneck_score": 4.981,
+      "bottleneck_score": 32.4,
       "risk_score": 0.1155,
       "tsic": 0.75,
       "severity": "medium"
     },
     {
+      "service": "frontend.default",
+      "bottleneck_score": 30.85,
+      "risk_score": 0.0,
+      "tsic": 0.0,
+      "severity": "low"
+    },
+    {
       "service": "checkoutservice.default",
-      "bottleneck_score": 0.4625,
+      "bottleneck_score": 22.77,
       "risk_score": 0.0877,
       "tsic": 1.0,
       "severity": "low"
     },
     {
       "service": "emailservice.default",
-      "bottleneck_score": 0.3494,
+      "bottleneck_score": 19.08,
       "risk_score": 0.0418,
       "tsic": 1.0,
       "severity": "low"
     },
     {
       "service": "paymentservice.default",
-      "bottleneck_score": 0.2882,
+      "bottleneck_score": 16.98,
       "risk_score": 0.0153,
       "tsic": 1.0,
       "severity": "low"

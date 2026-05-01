@@ -631,7 +631,7 @@ svg { font-family: var(--mono); }
     <div id="cp-best"></div>
 
     <div class="sec-hdr" style="margin-top:20px">
-      <span class="sec-title">Most Frequent Paths</span>
+      <span class="sec-title">Endpoint Appearance in Critical Traces</span>
     </div>
     <div class="tbl-wrap">
       <table>
@@ -729,7 +729,7 @@ svg { font-family: var(--mono); }
           <table>
             <thead><tr>
               <th>Caller</th><th>Callee</th>
-              <th class="r">Zipkin Count</th><th class="r">Prom Req/s</th>
+              <th class="r">ZIPKIN CALL RATE</th><th class="r">Prom Req/s</th>
             </tr></thead>
             <tbody id="t-edges"></tbody>
           </table>
@@ -765,7 +765,7 @@ svg { font-family: var(--mono); }
 
     <div class="chart-panel" style="margin-bottom:14px">
       <div class="chart-title">Throughput vs p99 Latency — Scatter</div>
-      <div class="chart-body"><svg id="c-scatter" height="260" style="width:100%"></svg></div>
+      <div class="chart-body"><svg id="c-scatter" height="560" style="width:100%"></svg></div>
     </div>
 
     <div class="tbl-wrap">
@@ -879,6 +879,12 @@ const R4 = v => v == null ? '—' : (+v).toFixed(4);
 const Pct = v => v == null ? '—' : ((+v)*100).toFixed(2)+'%';
 const P1 = v => v == null ? '—' : ((+v)*100).toFixed(1)+'%';
 const shortSvc = s => (s||'').replace('.default','');
+const endpointLabel = op => {
+  const raw = (op || '').split('?')[0].replace(/\/+$/, '');
+  const parts = raw.split(/[/:]+/).filter(Boolean);
+  const useful = parts.filter(p => !/^\{.*\}$/.test(p) && !/^(api|v\d+)$/i.test(p));
+  return (useful.at(-1) || parts.at(-1) || raw || 'unknown').slice(0, 24);
+};
 
 function badge(sev) {
   const s = (sev||'low').toLowerCase();
@@ -903,120 +909,121 @@ const C = {
 function hbar(svgId, data, {keyFn, valFn, color=C.hi, max=12, fmtFn=R, label=''}={}) {
   const el = $(svgId); if (!el || !data?.length) return;
   const items = data.slice(0,max);
-  const W = el.closest('.chart-body')?.clientWidth || el.parentElement?.clientWidth || 600;
-  const BH = 17, GAP = 5, PR = 80, PT = 6, PB = 6;
-  const PL = Math.max(
-    320,
-    d3.max(items, d => (keyFn(d) || '').length) * 7
-  );
+  const panel = el.closest('.chart-panel') || el.closest('.chart-body') || el.parentElement;
+  const W = panel.getBoundingClientRect().width - 28 || 500;
+  const BH = 16, GAP = 6, PT = 8, PB = 8, PR = 70;
+  const maxLabelLen = d3.max(items, d => (keyFn(d)||'').length) || 10;
+  const PL = Math.min(Math.max(maxLabelLen * 9, 120), W * 0.6);
   const H = items.length * (BH+GAP) + PT + PB;
+  const barW = W - PL - PR - 16;
+
   el.setAttribute('viewBox',`0 0 ${W} ${H}`);
   el.setAttribute('height', H);
-  const maxV = d3.max(items, valFn) || 1;
-  const X0 = PL + 10;
 
-  const xsc = d3.scaleLinear()
-    .domain([0, maxV])
-    .range([0, W - X0 - PR]);
+  const maxV = d3.max(items, valFn) || 1;
+  const xsc = d3.scaleLinear().domain([0, maxV]).range([0, barW]);
   const svg = d3.select(el); svg.selectAll('*').remove();
 
   items.forEach((d,i) => {
     const y = PT + i*(BH+GAP);
-    const bw = Math.min(xsc(valFn(d)), W - X0 - PR);
+    const bw = Math.max(xsc(valFn(d)||0), 0);
     const g = svg.append('g');
 
-
+    // label
     g.append('text')
-      .attr('x', 10)
+      .attr('x', PL - 8)
       .attr('y', y + BH/2 + 4)
-      .attr('text-anchor', 'start')
-      .attr('font-size', 12)
+      .attr('text-anchor', 'end')
+      .attr('font-size', 11)
       .attr('fill', C.text2)
       .attr('font-family', 'JetBrains Mono,monospace')
-      .text(keyFn(d) || '');
+      .text(keyFn(d)||'');
 
+    // track
     g.append('rect')
-      .attr('x', X0)
-      .attr('y', y)
-      .attr('width', W - X0 - PR)   // FIX
-      .attr('height', BH)
-      .attr('fill', C.bg3)
-      .attr('rx', 2);
+      .attr('x', PL).attr('y', y)
+      .attr('width', barW).attr('height', BH)
+      .attr('fill', C.bg3).attr('rx', 2);
 
+    // bar — minimum 3px so it's always visible
     g.append('rect')
-      .attr('x', X0)
-      .attr('y', y)
-      .attr('width', Math.max(bw,2))
+      .attr('x', PL).attr('y', y)
+      .attr('width', bw > 0 ? Math.max(bw, 3) : 0)
       .attr('height', BH)
-      .attr('fill', color)
-      .attr('rx', 2)
-      .attr('opacity', .8);
+      .attr('fill', color).attr('rx', 2).attr('opacity', .85);
 
+    // value label
     g.append('text')
-      .attr('x', X0 + bw + 5)   // FIX
+      .attr('x', PL + barW + 6)
       .attr('y', y + BH/2 + 4)
-      .attr('font-size', 12)
+      .attr('font-size', 10)
       .attr('fill', C.text2)
       .attr('font-family', 'JetBrains Mono,monospace')
       .text(fmtFn(valFn(d)));
   });
 }
 
-function dualHbar(svgId, data, {keyFn, val1Fn, val2Fn, color1=C.ye, color2=C.hi, max=12}={}) {
+function dualHbar(svgId, data, {keyFn, val1Fn, val2Fn, color1=C.ye, color2=C.hi, max=12, label1='p50', label2='p99'}={}) {
   const el = $(svgId); if (!el || !data?.length) return;
   const items = data.slice(0,max);
-  const W = Math.max(
-    el.closest('.chart-body')?.clientWidth || 600,
-    900
-  );
-  const BH = 7, GAP = 12, PR = 55, PT = 6, PB = 6;
-  const PL = Math.max(
-    220,
-    d3.max(items, d => (keyFn(d) || '').length) * 7
-  );
+  const W = el.closest('.chart-panel')?.getBoundingClientRect().width - 28 || 800;
+  const BH = 7, GAP = 12, PR = 70, PT = 24, PB = 6;
+  const PL = Math.max(160, d3.max(items, d => (keyFn(d)||'').length) * 7);
   const H = items.length * (BH*2+GAP+2) + PT + PB;
   el.setAttribute('viewBox',`0 0 ${W} ${H}`);
   el.setAttribute('height', H);
+
   const maxV = Math.max(d3.max(items, val1Fn)||1, d3.max(items, val2Fn)||1);
   const xsc = d3.scaleLinear().domain([0, maxV]).range([0, W-PL-PR]);
   const svg = d3.select(el); svg.selectAll('*').remove();
 
+  // legend
+  svg.append('rect').attr('x', PL).attr('y', 6).attr('width', 10).attr('height', 6).attr('fill', color1).attr('rx',1);
+  svg.append('text').attr('x', PL+14).attr('y', 13).attr('font-size', 9).attr('fill', C.text2).attr('font-family','JetBrains Mono,monospace').text(label1);
+  svg.append('rect').attr('x', PL+50).attr('y', 6).attr('width', 10).attr('height', 6).attr('fill', color2).attr('rx',1);
+  svg.append('text').attr('x', PL+64).attr('y', 13).attr('font-size', 9).attr('fill', C.text2).attr('font-family','JetBrains Mono,monospace').text(label2);
+
   items.forEach((d,i) => {
     const y = PT + i*(BH*2+GAP+2);
+    const w1 = Math.max(xsc(val1Fn(d)||0), 1);
+    const w2 = Math.max(xsc(val2Fn(d)||0), 1);
     const g = svg.append('g');
-    g.append('text').attr('x',PL-6).attr('y',y+BH*2/2+8).attr('text-anchor','end')
-      .attr('font-size',12).attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
-      .text(keyFn(d) || '');
-    // p50
-    const w1 = xsc(val1Fn(d));
-    g.append('rect').attr('x',PL).attr('y',y).attr('width',W-PL-PR).attr('height',BH)
-      .attr('fill',C.bg3).attr('rx',1);
-    g.append('rect').attr('x',PL).attr('y',y).attr('width',Math.max(w1,1)).attr('height',BH)
-      .attr('fill',color1).attr('rx',1).attr('opacity',.8);
-    // p99
-    const w2 = xsc(val2Fn(d));
-    g.append('rect').attr('x',PL).attr('y',y+BH+2).attr('width',W-PL-PR).attr('height',BH)
-      .attr('fill',C.bg3).attr('rx',1);
-    g.append('rect').attr('x',PL).attr('y',y+BH+2).attr('width',Math.max(w2,1)).attr('height',BH)
-      .attr('fill',color2).attr('rx',1).attr('opacity',.8);
-    // val label
-    g.append('text').attr('x',PL+Math.max(w2,w1)+5).attr('y',y+BH*2/2+8)
-      .attr('font-size',9).attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
+
+    // service label
+    g.append('text').attr('x', PL-6).attr('y', y+BH+4)
+      .attr('text-anchor','end').attr('font-size',11).attr('fill',C.text2)
+      .attr('font-family','JetBrains Mono,monospace')
+      .text((keyFn(d)||'').slice(0,22));
+
+    // p50 bar + label
+    g.append('rect').attr('x',PL).attr('y',y).attr('width',W-PL-PR).attr('height',BH).attr('fill',C.bg3).attr('rx',1);
+    g.append('rect').attr('x',PL).attr('y',y).attr('width',w1).attr('height',BH).attr('fill',color1).attr('rx',1).attr('opacity',.85);
+    g.append('text').attr('x',PL+w1+4).attr('y',y+BH-1)
+      .attr('font-size',9).attr('fill',color1)
+      .attr('font-family','JetBrains Mono,monospace')
+      .text(R1(val1Fn(d))+'ms');
+
+    // p99 bar + label
+    g.append('rect').attr('x',PL).attr('y',y+BH+2).attr('width',W-PL-PR).attr('height',BH).attr('fill',C.bg3).attr('rx',1);
+    g.append('rect').attr('x',PL).attr('y',y+BH+2).attr('width',w2).attr('height',BH).attr('fill',color2).attr('rx',1).attr('opacity',.85);
+    g.append('text').attr('x',PL+w2+4).attr('y',y+BH*2+1)
+      .attr('font-size',9).attr('fill',color2)
+      .attr('font-family','JetBrains Mono,monospace')
       .text(R1(val2Fn(d))+'ms');
   });
 }
 
-function scatter(svgId, data, {xKey, yKey, labelKey, xLabel='req/s', yLabel='p99 ms'}={}) {
+function scatter(svgId, data, {xKey, yKey, labelKey, xLabel='req/s', yLabel='p99 ms', maxLabels=Infinity, yScale='linear'}={}) {
   const el = $(svgId); if (!el || !data?.length) return;
-  const W = Math.max(
-    el.closest('.chart-body')?.clientWidth || 600,
-    900
-  );
+  const W = el.closest('.chart-panel')?.getBoundingClientRect().width - 28 || 800;
   const H = +el.getAttribute('height') || 260;
-  const pad = {t:20, r:20, b:40, l:70};
+  const pad = {t:26, r:42, b:48, l:82};
   el.setAttribute('viewBox', `0 0 ${W} ${H}`);
-  const xs = d3.scaleLinear().domain([0, d3.max(data,d=>d[xKey])||1]).range([pad.l,W-pad.r]).nice();
-  const ys = d3.scaleLinear().domain([0, d3.max(data,d=>d[yKey])||1]).range([H-pad.b,pad.t]).nice();
+  const maxX = d3.max(data,d=>d[xKey]) || 1;
+  const maxY = d3.max(data,d=>d[yKey]) || 1;
+  const xs = d3.scaleLinear().domain([0, maxX * 1.1]).range([pad.l,W-pad.r]).nice();
+  const yFactory = yScale === 'sqrt' ? d3.scaleSqrt : d3.scaleLinear;
+  const ys = yFactory().domain([0, maxY * 1.12]).range([H-pad.b,pad.t]).nice();
   const svg = d3.select(el); svg.selectAll('*').remove();
 
   ys.ticks(5).forEach(t => {
@@ -1039,14 +1046,85 @@ function scatter(svgId, data, {xKey, yKey, labelKey, xLabel='req/s', yLabel='p99
     .attr('text-anchor','middle').attr('font-size',9).attr('fill',C.text3)
     .attr('font-family','JetBrains Mono,monospace').text(yLabel);
 
-  data.forEach(d => {
-    const cx = xs(d[xKey]||0), cy = ys(d[yKey]||0);
-    svg.append('circle').attr('cx',cx).attr('cy',cy).attr('r',5)
-      .attr('fill',C.hi).attr('opacity',.7).attr('stroke',C.hi2).attr('stroke-width',1);
-    if (d[labelKey]) {
-      svg.append('text').attr('x',cx+7).attr('y',cy+4).attr('font-size',8)
-        .attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
-        .text((d[labelKey]||'').slice(0,18));
+  const seen = new Map();
+  const plotted = data.map(d => {
+    const rawX = xs(d[xKey]||0), rawY = ys(d[yKey]||0);
+    const bucket = `${Math.round(rawX/20)}:${Math.round(rawY/20)}`;
+    const n = seen.get(bucket) || 0;
+    seen.set(bucket, n + 1);
+    const spread = n ? 8 + Math.floor(n / 8) * 5 : 0;
+    const angle = n * 2.399963;
+    const cx = Math.max(pad.l + 8, Math.min(W - pad.r - 8, rawX + Math.cos(angle) * spread));
+    const cy = Math.max(pad.t + 8, Math.min(H - pad.b - 8, rawY + Math.sin(angle) * spread));
+    return {d, cx, cy, n};
+  });
+
+  plotted.forEach(p => {
+    const d = p.d;
+    const label = d[labelKey] || '';
+    const dot = svg.append('circle').attr('cx',p.cx).attr('cy',p.cy).attr('r',7)
+      .attr('fill',C.hi).attr('opacity',.92).attr('stroke',C.text).attr('stroke-width',1.2);
+    dot.append('title').text(`${label}\n${xLabel}: ${R(d[xKey]||0)}\n${yLabel}: ${R1(d[yKey]||0)}`);
+  });
+
+  const boxes = [];
+  const overlaps = b => boxes.some(a => !(b.x2 < a.x1 || b.x1 > a.x2 || b.y2 < a.y1 || b.y1 > a.y2));
+  const labelItems = plotted
+    .filter(p => p.d[labelKey])
+    .sort((a,b) => ((b.d[yKey]||0) / maxY + (b.d[xKey]||0) / maxX * .35) -
+                   ((a.d[yKey]||0) / maxY + (a.d[xKey]||0) / maxX * .35))
+    .slice(0, Number.isFinite(maxLabels) ? maxLabels : plotted.length);
+
+  labelItems.forEach(p => {
+    const label = (p.d[labelKey] || '').slice(0, 22);
+    const w = label.length * 6.4;
+    const h = 13;
+    const candidates = [];
+    for (let ring = 1; ring <= 5; ring++) {
+      const dx = 12 + ring * 8;
+      const dy = 10 + ring * 7;
+      candidates.push(
+        {x:p.cx + dx, y:p.cy - dy},
+        {x:p.cx + dx, y:p.cy + dy},
+        {x:p.cx - w - dx, y:p.cy - dy},
+        {x:p.cx - w - dx, y:p.cy + dy},
+        {x:p.cx - w / 2, y:p.cy - dy - 8},
+        {x:p.cx - w / 2, y:p.cy + dy + 12}
+      );
+    }
+
+    let placed = false;
+    for (const c of candidates) {
+      const x = Math.max(pad.l + 4, Math.min(W - pad.r - w - 4, c.x));
+      const y = Math.max(pad.t + h, Math.min(H - pad.b - 4, c.y));
+      const box = {x1:x - 2, y1:y - h, x2:x + w + 2, y2:y + 3};
+      if (overlaps(box)) continue;
+      boxes.push(box);
+      svg.append('line')
+        .attr('x1',p.cx).attr('y1',p.cy).attr('x2',x - 3).attr('y2',y - 4)
+        .attr('stroke',C.line2).attr('stroke-width',.8).attr('opacity',.65);
+      svg.append('text').attr('x',x).attr('y',y).attr('font-size',10)
+        .attr('fill',C.text).attr('font-family','JetBrains Mono,monospace')
+        .attr('paint-order','stroke').attr('stroke',C.bg).attr('stroke-width',3)
+        .attr('stroke-linejoin','round')
+        .text(label);
+      placed = true;
+      break;
+    }
+    if (!placed) {
+      const row = boxes.length % Math.max(1, Math.floor((H - pad.t - pad.b) / 16));
+      const side = boxes.length % 2;
+      const x = side ? W - pad.r - w - 6 : pad.l + 6;
+      const y = pad.t + 18 + row * 16;
+      boxes.push({x1:x - 2, y1:y - h, x2:x + w + 2, y2:y + 3});
+      svg.append('line')
+        .attr('x1',p.cx).attr('y1',p.cy).attr('x2',side ? x + w : x).attr('y2',y - 4)
+        .attr('stroke',C.line2).attr('stroke-width',.7).attr('opacity',.55);
+      svg.append('text').attr('x',x).attr('y',y).attr('font-size',10)
+        .attr('fill',C.text).attr('font-family','JetBrains Mono,monospace')
+        .attr('paint-order','stroke').attr('stroke',C.bg).attr('stroke-width',3)
+        .attr('stroke-linejoin','round')
+        .text(label);
     }
   });
 }
@@ -1064,26 +1142,39 @@ function sparkline(data, {width=80, height=24, color=C.hi}={}) {
   </svg>`;
 }
 
-function tsLine(svgId, series, {colors=null, labels=null}={}) {
+function tsLine(svgId, series, {colors=null, labels=null, fmtFn=R1}={}) {
   const el = $(svgId); if (!el || !series?.length) return;
-  const W = el.parentElement?.clientWidth || 400;
-  const H = 90;
-  const pad = {t:8, r:16, b:22, l:48};
+  const W = el.parentElement?.getBoundingClientRect().width || 400;
+  const H = 190;
+  const pad = {t:24, r:84, b:34, l:72};
   el.setAttribute('viewBox', `0 0 ${W} ${H}`);
   el.setAttribute('height', H);
   const allTs = series.flatMap(s=>(s||[]).map(d=>d.ts));
-  const allVals = series.flatMap(s=>(s||[]).map(d=>d.value));
-  if (!allTs.length) return;
-  const xs = d3.scaleLinear().domain([Math.min(...allTs), Math.max(...allTs)]).range([pad.l, W-pad.r]);
-  const ys = d3.scaleLinear().domain([0, Math.max(...allVals)||1]).range([H-pad.b, pad.t]).nice();
+  const allVals = series.flatMap(s=>(s||[]).map(d=>+d.value || 0));
   const svg = d3.select(el); svg.selectAll('*').remove();
+  if (!allTs.length) {
+    svg.append('text')
+      .attr('x', W / 2).attr('y', H / 2)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', 14)
+      .attr('fill', C.text3)
+      .attr('font-family', 'JetBrains Mono,monospace')
+      .text('no data');
+    return;
+  }
+  const minV = Math.min(...allVals);
+  const maxV = Math.max(...allVals);
+  const padV = Math.max((maxV - minV) * 0.12, Math.abs(maxV || minV) * 0.04, 0.01);
+  const xs = d3.scaleLinear().domain([Math.min(...allTs), Math.max(...allTs)]).range([pad.l, W-pad.r]);
+  const ys = d3.scaleLinear().domain([minV - padV, maxV + padV]).range([H-pad.b, pad.t]).nice();
 
-  ys.ticks(3).forEach(t => {
+  ys.ticks(4).forEach(t => {
     svg.append('line').attr('x1',pad.l).attr('x2',W-pad.r).attr('y1',ys(t)).attr('y2',ys(t))
-      .attr('stroke',C.line).attr('stroke-width',.5);
-    svg.append('text').attr('x',pad.l-4).attr('y',ys(t)+4).attr('text-anchor','end')
-      .attr('font-size',8).attr('fill',C.text3).attr('font-family','JetBrains Mono,monospace')
-      .text(R1(t));
+      .attr('stroke',C.line2).attr('stroke-width',.8).attr('opacity',.8);
+    svg.append('text').attr('x',pad.l-8).attr('y',ys(t)+5).attr('text-anchor','end')
+      .attr('font-size',13).attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
+      .attr('font-weight',600)
+      .text(fmtFn(t));
   });
 
   const defColors = [C.hi, C.gr, C.ye, C.re, C.pu, C.cy, C.or];
@@ -1092,11 +1183,26 @@ function tsLine(svgId, series, {colors=null, labels=null}={}) {
     const col = (colors||defColors)[si % defColors.length];
     const line = d3.line().x(d=>xs(d.ts)).y(d=>ys(d.value)).curve(d3.curveMonotoneX);
     svg.append('path').datum(s).attr('d', line).attr('fill','none')
-      .attr('stroke', col).attr('stroke-width',1.5).attr('opacity',.85);
+      .attr('stroke', col).attr('stroke-width',2.6).attr('opacity',.95);
+
+    const last = s[s.length - 1];
+    const lx = xs(last.ts);
+    const ly = ys(last.value);
+    svg.append('circle')
+      .attr('cx', lx).attr('cy', ly).attr('r', 4.5)
+      .attr('fill', col).attr('stroke', C.bg).attr('stroke-width', 1.8);
+    svg.append('text')
+      .attr('x', Math.min(lx + 9, W - pad.r + 9))
+      .attr('y', ly + 5)
+      .attr('font-size', 15)
+      .attr('fill', col)
+      .attr('font-family', 'JetBrains Mono,monospace')
+      .attr('font-weight', 700)
+      .text(fmtFn(last.value));
   });
 }
 
-function forceGraph(svgId, nodes, links, {sizeKey='ais', colorFn=null, labelKey='service', height=520}={}) {
+function forceGraph(svgId, nodes, links, {sizeKey='ais', colorFn=null, labelKey='service', height=520, distance=90, charge=-200}={}) {
   const el = $(svgId); if (!el || !nodes?.length) return;
   const W = el.parentElement?.clientWidth || 900;
   const H = height;
@@ -1112,7 +1218,8 @@ function forceGraph(svgId, nodes, links, {sizeKey='ais', colorFn=null, labelKey=
     .append('path').attr('d','M0,-3L6,0L0,3').attr('fill',C.line2);
 
   const link = svg.append('g').selectAll('line').data(links).join('line')
-    .attr('stroke',C.line2).attr('stroke-width',1.2)
+    .attr('stroke',C.text3).attr('stroke-width',d=>Math.min(4, 1 + Math.sqrt(d.value || 1) / 8))
+    .attr('opacity', .75)
     .attr('marker-end',`url(#arr${svgId})`);
 
   const node = svg.append('g').selectAll('g').data(nodes).join('g')
@@ -1130,15 +1237,20 @@ function forceGraph(svgId, nodes, links, {sizeKey='ais', colorFn=null, labelKey=
   node.append('text').attr('dy', d=>rsc(d[sizeKey]||0)+11)
     .attr('text-anchor','middle').attr('font-size',9)
     .attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
-    .text(d=>(d[labelKey]||'').replace('.default','').slice(0,20));
+    .text(d=>(typeof labelKey === 'function' ? labelKey(d) : (d[labelKey]||'')).replace('.default','').slice(0,20));
 
   const sim = d3.forceSimulation(nodes)
-    .force('link',d3.forceLink(links).id(d=>d.id||d.service).distance(90).strength(.5))
-    .force('charge',d3.forceManyBody().strength(-200))
+    .force('link',d3.forceLink(links).id(d=>d.id||d.service).distance(distance).strength(.75))
+    .force('charge',d3.forceManyBody().strength(charge))
     .force('center',d3.forceCenter(W/2,H/2))
     .force('collision',d3.forceCollide().radius(d=>rsc(d[sizeKey]||0)+12));
 
   sim.on('tick',()=>{
+    nodes.forEach(d => {
+      const r = rsc(d[sizeKey]||0) + 28;
+      d.x = Math.max(r, Math.min(W - r, d.x));
+      d.y = Math.max(r, Math.min(H - r, d.y));
+    });
     link.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y)
         .attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
     node.attr('transform',d=>`translate(${d.x},${d.y})`);
@@ -1182,7 +1294,7 @@ function renderOverview(bn) {
   hbar('c-bn-ep', epBn, {
     keyFn: d => {
       const svc = (d.service || '').replace('.default','');
-      const op  = (d.operation || '').split('/').pop();
+      const op  = (d.operation || '').split('/').filter(Boolean).pop() || d.operation || '';
       return `${svc}:${op}`;
     },
     valFn: d=>d.bottleneck_score||0,
@@ -1266,7 +1378,16 @@ function renderCriticalPaths(cp) {
   // path table
   const tbl = $('t-cp-paths'); tbl.innerHTML='';
   byPath.slice(0,20).forEach(p => {
-    const pathStr = (p.path||[]).map(x=>shortSvc(x.split('::')[0])).join(' → ');
+    console.log(p.path)
+    const pathStr = (p.path || [])
+    .map(x => {
+      const i = x.indexOf(':');
+      const svc = x.slice(0, i).replace('.default','');
+      const op  = x.slice(i + 1);
+      const clean = op.split('/').pop();
+      return clean ? `${svc}:${clean}` : svc;
+    })
+    .join(' → ');
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="ltrunc mono dim">${pathStr}</td>
@@ -1278,7 +1399,7 @@ function renderCriticalPaths(cp) {
   });
 
   hbar('c-cp-ep', byEp.slice(0,15), {
-    keyFn: d=>`${shortSvc(d.service||'')}:${(d.operation||'').split('/').pop().slice(0,16)}`,
+    keyFn: d=>`${shortSvc(d.service||'')}:${(d.operation||'').split('/').filter(Boolean).pop()||(d.operation||'')}`,
     valFn: d=>d.appearance_weight||0,
     color: C.pu, fmtFn: R4
   });
@@ -1402,7 +1523,7 @@ function renderTimeSeries(svcM) {
   const container = $('ts-panels');
   container.innerHTML = '';
 
-  const servicesWithTS = svcM.filter(m => {
+  const servicesWithTS = (svcM || []).filter(m => {
     const ts = m.time_series;
     return ts && (ts.request_rate_ts?.length || ts.p99_latency_ts?.length || ts.cpu_usage_ts?.length);
   });
@@ -1413,7 +1534,9 @@ function renderTimeSeries(svcM) {
   }
 
   const grid = document.createElement('div');
-  grid.className = 'grid-2';
+  grid.style.display = 'flex';
+  grid.style.flexDirection = 'column';
+  grid.style.gap = '16px';
 
   servicesWithTS.forEach(m => {
     const ts = m.time_series;
@@ -1426,19 +1549,19 @@ function renderTimeSeries(svcM) {
 
     panel.innerHTML = `
       <div class="chart-title">${shortSvc(m.service)}</div>
-      <div class="chart-body" style="padding:10px 14px;">
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">
+      <div class="chart-body" style="padding:14px 16px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:8px">
           <div>
-            <div style="font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:.1em;margin-bottom:3px">REQ/S</div>
-            <svg id="ts-rps-${m.service}" style="width:100%;height:60px"></svg>
+            <div style="font-family:var(--mono);font-size:12px;color:var(--text2);letter-spacing:.1em;margin-bottom:10px;font-weight:600">REQUEST RATE (req/s)</div>
+            <svg id="ts-rps-${m.service}" style="width:100%;height:170px"></svg>
           </div>
           <div>
-            <div style="font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:.1em;margin-bottom:3px">P99 MS</div>
-            <svg id="ts-p99-${m.service}" style="width:100%;height:60px"></svg>
+            <div style="font-family:var(--mono);font-size:12px;color:var(--text2);letter-spacing:.1em;margin-bottom:10px;font-weight:600">P99 LATENCY (ms)</div>
+            <svg id="ts-p99-${m.service}" style="width:100%;height:170px"></svg>
           </div>
           <div>
-            <div style="font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:.1em;margin-bottom:3px">CPU</div>
-            <svg id="ts-cpu-${m.service}" style="width:100%;height:60px"></svg>
+            <div style="font-family:var(--mono);font-size:12px;color:var(--text2);letter-spacing:.1em;margin-bottom:10px;font-weight:600">CPU USAGE (cores)</div>
+            <svg id="ts-cpu-${m.service}" style="width:100%;height:170px"></svg>
           </div>
         </div>
       </div>
@@ -1447,9 +1570,9 @@ function renderTimeSeries(svcM) {
 
     // defer to after DOM insert
     setTimeout(() => {
-      tsLine(`ts-rps-${m.service}`, [rts], {colors:[C.gr]});
-      tsLine(`ts-p99-${m.service}`, [p99], {colors:[C.ye]});
-      tsLine(`ts-cpu-${m.service}`, [cpu], {colors:[C.re]});
+      tsLine(`ts-rps-${m.service}`, [rts], {colors:[C.gr], fmtFn:R});
+      tsLine(`ts-p99-${m.service}`, [p99], {colors:[C.ye], fmtFn:R1});
+      tsLine(`ts-cpu-${m.service}`, [cpu], {colors:[C.re], fmtFn:v=>(+v).toFixed(4)});
     }, 0);
   });
 
@@ -1457,7 +1580,7 @@ function renderTimeSeries(svcM) {
 }
 
 function renderServiceGraph(gSvc, svcM) {
-  if (!gSvc?.nodes) return;
+  if (!gSvc || !Array.isArray(gSvc.nodes)) return;
   const scoreMap = {};
   (svcM||[]).forEach(m=>{ scoreMap[m.service] = m.bottleneck_score||0; });
   const maxSc = Math.max(...Object.values(scoreMap), 1);
@@ -1477,14 +1600,15 @@ function renderServiceGraph(gSvc, svcM) {
 }
 
 function renderEndpointMetrics(epM, epAgg) {
+  epM = epM || [];
   if (!epM?.length) return;
   $('ep-sub').textContent = `${epM.length} endpoints`;
 
-  const scData = epM.slice(0,40).map(e=>({
-    x: e.request_rate||0, y: e.latency?.p99_ms||0,
-    label: (e.operation||'').split('/').pop()
+  const scData = (epM || []).slice(0,40).map(e=>({
+    x: e.request_rate||0, y: e.latency?.p99_ms || 0||0,
+    label: endpointLabel(e.operation)
   }));
-  scatter('c-scatter', scData, {xKey:'x', yKey:'y', labelKey:'label', xLabel:'req/s', yLabel:'p99 ms'});
+  scatter('c-scatter', scData, {xKey:'x', yKey:'y', labelKey:'label', xLabel:'req/s', yLabel:'p99 ms', maxLabels:Infinity, yScale:'linear'});
 
   const tbl = $('t-ep-full'); tbl.innerHTML='';
   epM.forEach(m => {
@@ -1535,19 +1659,56 @@ function renderEndpointGraph(gEp, epM) {
   const scoreMap = {};
   (epM||[]).forEach(m=>{ scoreMap[m.id] = m.bottleneck_score||0; });
 
-  const top = [...gEp.nodes].sort((a,b)=>b.call_count-a.call_count).slice(0,50);
-  const topIds = new Set(top.map(n=>n.id));
-  const links = gEp.edges.filter(e=>topIds.has(e.caller_id)&&topIds.has(e.callee_id))
-    .map(e=>({source:e.caller_id, target:e.callee_id}));
+  const nodeById = new Map((gEp.nodes || []).map(n => [n.id, {...n, label:endpointLabel(n.operation)}]));
+  (gEp.edges || []).forEach(e => {
+    if (!nodeById.has(e.caller_id)) {
+      nodeById.set(e.caller_id, {
+        id: e.caller_id,
+        service: e.caller_svc,
+        operation: e.caller_op,
+        label: endpointLabel(e.caller_op),
+        call_count: e.call_count || 1,
+        ais: 1,
+        synthetic: true
+      });
+    }
+    if (!nodeById.has(e.callee_id)) {
+      nodeById.set(e.callee_id, {
+        id: e.callee_id,
+        service: e.callee_svc,
+        operation: e.callee_op,
+        label: endpointLabel(e.callee_op),
+        call_count: e.call_count || 1,
+        ais: 1,
+        synthetic: true
+      });
+    }
+  });
+
+  const nodes = [...nodeById.values()]
+    .sort((a,b)=>(b.call_count||0)-(a.call_count||0))
+    .slice(0,50);
+  const nodeIds = new Set(nodes.map(n=>n.id));
+  const links = (gEp.edges || [])
+    .filter(e=>nodeIds.has(e.caller_id)&&nodeIds.has(e.callee_id))
+    .map(e=>({source:e.caller_id, target:e.callee_id, value:e.call_count || 1}));
 
   const colorFn = d => {
     const sc = scoreMap[d.id]||0;
+    if (d.synthetic) return C.cy;
     if (sc>=50) return C.re;
     if (sc>=10) return C.ye;
     return C.hi;
   };
 
-  forceGraph('g-ep', top, links, {sizeKey:'ais', colorFn, labelKey:'operation', height:580});
+  forceGraph('g-ep', nodes, links, {
+    sizeKey:'ais',
+    colorFn,
+    labelKey:d=>d.label || endpointLabel(d.operation),
+    height:580,
+    distance:65,
+    charge:-90
+  });
 }
 
 function renderPrometheus(prom, svcM) {

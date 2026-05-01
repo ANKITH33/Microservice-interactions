@@ -29,11 +29,11 @@
     "callers": [
       {
         "caller_svc": "checkoutservice.default",
-        "caller_op": "/hipstershop.ProductCatalogService/GetProduct"
+        "caller_op": null
       },
       {
         "caller_svc": "frontend.default",
-        "caller_op": "/hipstershop.ProductCatalogService/GetProduct"
+        "caller_op": null
       }
     ],
     "fanout_avg": 0.0
@@ -68,11 +68,11 @@
     "callers": [
       {
         "caller_svc": "checkoutservice.default",
-        "caller_op": "/hipstershop.CurrencyService/Convert"
+        "caller_op": null
       },
       {
         "caller_svc": "frontend.default",
-        "caller_op": "/hipstershop.CurrencyService/Convert"
+        "caller_op": null
       }
     ],
     "fanout_avg": 0.0
@@ -107,11 +107,11 @@
     "callers": [
       {
         "caller_svc": "checkoutservice.default",
-        "caller_op": "/hipstershop.CartService/GetCart"
+        "caller_op": null
       },
       {
         "caller_svc": "frontend.default",
-        "caller_op": "/hipstershop.CartService/GetCart"
+        "caller_op": null
       }
     ],
     "fanout_avg": 0.0
@@ -146,7 +146,7 @@
     "callers": [
       {
         "caller_svc": "frontend.default",
-        "caller_op": "/hipstershop.CurrencyService/GetSupportedCurrencies"
+        "caller_op": null
       }
     ],
     "fanout_avg": 0.0
@@ -181,11 +181,11 @@
     "callers": [
       {
         "caller_svc": "frontend.default",
-        "caller_op": "/hipstershop.ProductCatalogService/ListProducts"
+        "caller_op": null
       },
       {
         "caller_svc": "recommendationservice.default",
-        "caller_op": "/hipstershop.ProductCatalogService/ListProducts"
+        "caller_op": null
       }
     ],
     "fanout_avg": 0.0
@@ -220,7 +220,7 @@
     "callers": [
       {
         "caller_svc": "frontend.default",
-        "caller_op": "/hipstershop.RecommendationService/ListRecommendations"
+        "caller_op": null
       }
     ],
     "fanout_avg": 0.0
@@ -255,7 +255,7 @@
     "callers": [
       {
         "caller_svc": "frontend.default",
-        "caller_op": "/hipstershop.AdService/GetAds"
+        "caller_op": null
       }
     ],
     "fanout_avg": 0.0
@@ -350,11 +350,11 @@
     "callers": [
       {
         "caller_svc": "checkoutservice.default",
-        "caller_op": "/hipstershop.ShippingService/GetQuote"
+        "caller_op": null
       },
       {
         "caller_svc": "frontend.default",
-        "caller_op": "/hipstershop.ShippingService/GetQuote"
+        "caller_op": null
       }
     ],
     "fanout_avg": 0.0
@@ -419,7 +419,7 @@
     "callers": [
       {
         "caller_svc": "frontend.default",
-        "caller_op": "/hipstershop.CartService/AddItem"
+        "caller_op": null
       }
     ],
     "fanout_avg": 0.0
@@ -484,7 +484,7 @@
     "callers": [
       {
         "caller_svc": "checkoutservice.default",
-        "caller_op": "/hipstershop.CartService/EmptyCart"
+        "caller_op": null
       }
     ],
     "fanout_avg": 0.0
@@ -519,7 +519,7 @@
     "callers": [
       {
         "caller_svc": "checkoutservice.default",
-        "caller_op": "/hipstershop.EmailService/SendOrderConfirmation"
+        "caller_op": null
       }
     ],
     "fanout_avg": 0.0
@@ -554,7 +554,7 @@
     "callers": [
       {
         "caller_svc": "checkoutservice.default",
-        "caller_op": "/hipstershop.ShippingService/ShipOrder"
+        "caller_op": null
       }
     ],
     "fanout_avg": 0.0
@@ -589,7 +589,7 @@
     "callers": [
       {
         "caller_svc": "checkoutservice.default",
-        "caller_op": "/hipstershop.PaymentService/Charge"
+        "caller_op": null
       }
     ],
     "fanout_avg": 0.0
@@ -624,7 +624,7 @@
     "callers": [
       {
         "caller_svc": "frontend.default",
-        "caller_op": "/hipstershop.CheckoutService/PlaceOrder"
+        "caller_op": null
       }
     ],
     "fanout_avg": 0.0

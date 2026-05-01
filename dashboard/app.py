@@ -27,6 +27,7 @@ FILES = [
     "critical-paths.json",
     "graph-service.json",
     "graph-endpoint.json",
+    "endpoint-aggregates.json",
     "parsed-spans.json",
     "prometheus-processed.json",
 ]
