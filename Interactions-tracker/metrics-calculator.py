@@ -64,7 +64,7 @@ import subprocess
 from collections import defaultdict
 from pathlib import Path
 
-UPLOADS_DIR          = Path("/mnt/user-data/uploads")
+UPLOADS_DIR = Path(__file__).resolve().parent.parent / "baseline" / "outputs-baseline"
 OUTPUT_DIR           = Path(__file__).resolve().parent / "outputs"
 OBSERVATION_WINDOW_SEC = 600.0   # 10-minute collection window
 

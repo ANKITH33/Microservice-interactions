@@ -95,7 +95,8 @@ def detect_service_bottlenecks(svc_metrics: list) -> list:
             )
 
         # Error rate
-        if m["error_rate"] >= HIGH_ERROR_THRESHOLD:
+        err_rate = m.get("error_rate", m.get("errors", {}).get("rate", 0.0))
+        if err_rate >= HIGH_ERROR_THRESHOLD:
             reasons.append(
                 f"elevated error rate — {m['error_rate'] * 100:.2f}% of spans are errors"
             )
@@ -131,7 +132,7 @@ def detect_service_bottlenecks(svc_metrics: list) -> list:
             "tail_ratio":            m["tail_ratio"],
             "replica_count":         m["replica_count"],
             "request_rate":          m["prometheus"].get("request_rate", 0.0),
-            "error_rate":            m["error_rate"],
+            "error_rate":            m.get("error_rate", m.get("errors", {}).get("rate", 0.0)),
             "worst_endpoint":        m["worst_endpoint"],
             "prometheus":            m["prometheus"],
         })
@@ -162,7 +163,8 @@ def detect_endpoint_bottlenecks(ep_metrics: list) -> list:
                 f"high fan-in — AIS={ais} caller(s), {reps} replica(s)"
             )
 
-        if m["error_rate"] >= HIGH_ERROR_THRESHOLD:
+        err_rate = m.get("error_rate", m.get("errors", {}).get("rate", 0.0))
+        if err_rate >= HIGH_ERROR_THRESHOLD:
             reasons.append(
                 f"elevated error rate — {m['error_rate'] * 100:.2f}%"
             )
@@ -181,7 +183,7 @@ def detect_endpoint_bottlenecks(ep_metrics: list) -> list:
             "tail_ratio":           m["tail_ratio"],
             "call_count":           m["call_count"],
             "request_rate":         m["request_rate"],
-            "error_rate":           m["error_rate"],
+            "error_rate":           m.get("error_rate", m.get("errors", {}).get("rate", 0.0)),
             "replica_count":        m["replica_count"],
         })
 

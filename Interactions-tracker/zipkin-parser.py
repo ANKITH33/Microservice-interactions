@@ -34,7 +34,7 @@ from collections import defaultdict
 from pathlib import Path
 
 # ── Paths ──────────────────────────────────────────────────────────────────
-UPLOADS_DIR = Path("/mnt/user-data/uploads")
+UPLOADS_DIR = Path(__file__).resolve().parent.parent / "baseline" / "outputs-baseline"
 OUTPUT_DIR  = Path(__file__).resolve().parent / "outputs"
 
 # ── Configuration ──────────────────────────────────────────────────────────

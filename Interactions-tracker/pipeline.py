@@ -3,7 +3,7 @@ pipeline.py
 
 Runs the full analysis pipeline end-to-end:
 
-  Step 1  zipkin_parser          — parse raw traces, normalize routes
+  Step 1  zipkin_parser          — parse raw traces, compute critical paths
   Step 2  prometheus_collector   — extract per-service Prometheus metrics
   Step 3  graph_service_builder  — build service dependency graph
   Step 4  graph_endpoint_builder — build endpoint dependency graph
@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, BASE_DIR)
 
 STEPS = [
-    ("zipkin-parser",          "Step 1 — Parse Zipkin traces & normalize routes"),
+    ("zipkin-parser",          "Step 1 — Parse Zipkin traces & compute critical paths"),
     ("prometheus-collector",   "Step 2 — Extract Prometheus metrics"),
     ("graph-service-builder",  "Step 3 — Build service dependency graph"),
     ("graph-endpoint-builder", "Step 4 — Build endpoint dependency graph"),
@@ -34,7 +34,7 @@ STEPS = [
 ]
 
 
-def _bar(char: str = "═", width: int = 70) -> str:
+def _bar(char: str = "=", width: int = 70) -> str:
     return char * width
 
 
@@ -53,17 +53,16 @@ def run():
         step_start = time.time()
         try:
             mod = importlib.import_module(module_name)
-            # Reload if already imported (allows re-running pipeline in same session)
             importlib.reload(mod)
             mod.main()
         except Exception as exc:
-            print(f"\n  ✗ ERROR in {module_name}: {exc}")
+            print(f"\n  ERROR in {module_name}: {exc}")
             import traceback
             traceback.print_exc()
             sys.exit(1)
 
         elapsed = time.time() - step_start
-        print(f"\n  ✓ Completed in {elapsed:.1f}s")
+        print(f"\n  Completed in {elapsed:.1f}s")
 
     total_elapsed = time.time() - total_start
     print(f"\n{_bar()}")
@@ -71,7 +70,6 @@ def run():
     print(f"  Outputs written to: {os.path.join(BASE_DIR, 'outputs')}/")
     print(_bar())
 
-    # List output files
     output_dir = os.path.join(BASE_DIR, "outputs")
     if os.path.isdir(output_dir):
         print("\n  Output files:")
