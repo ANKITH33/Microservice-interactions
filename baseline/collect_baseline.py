@@ -34,22 +34,49 @@ TRACE_LIMIT     = 1000
 LOOKBACK_MS     = 10 * 60 * 1000   # 10 minutes
 LOOKBACK_SEC    = 10 * 60           # 10 minutes
 
+#list of prometheus queries
 PROMETHEUS_QUERIES = {
-    "request_rate":     'rate(istio_requests_total[5m])',
-    "p50_latency":      'histogram_quantile(0.50, rate(istio_request_duration_milliseconds_bucket[5m]))',
-    "p95_latency":      'histogram_quantile(0.95, rate(istio_request_duration_milliseconds_bucket[5m]))',
-    "p99_latency":      'histogram_quantile(0.99, rate(istio_request_duration_milliseconds_bucket[5m]))',
-    "error_rate":       'rate(istio_requests_total{response_code!~"2.."}[5m])',
-    "cpu_usage":        'rate(container_cpu_usage_seconds_total{namespace="default"}[5m])',
-    "memory_usage":     'container_memory_usage_bytes{namespace="default"}',
-    "request_duration": 'istio_request_duration_milliseconds_bucket',
-    "total_requests":   'istio_requests_total',
-}
-# ─────────────────────────────────────────────────────────────────────────────
+    # Traffic (endpoint-level)
+    "request_rate": 'rate(istio_requests_total[5m]) by (destination_workload, request_operation)',
+    "total_requests": 'increase(istio_requests_total[5m]) by (destination_workload, request_operation)',
 
+    # Latency (endpoint-level)
+    "p50_latency": 'histogram_quantile(0.50, rate(istio_request_duration_milliseconds_bucket[5m])) by (destination_workload, request_operation)',
+    "p95_latency": 'histogram_quantile(0.95, rate(istio_request_duration_milliseconds_bucket[5m])) by (destination_workload, request_operation)',
+    "p99_latency": 'histogram_quantile(0.99, rate(istio_request_duration_milliseconds_bucket[5m])) by (destination_workload, request_operation)',
+ 
+    # Raw latency histogram
+    "request_duration": 'istio_request_duration_milliseconds_bucket',
+
+    # Error metrics
+    "error_rate": 'rate(istio_requests_total{response_code!~"2.."}[5m]) by (destination_workload, request_operation)',
+    "error_4xx": 'rate(istio_requests_total{response_code=~"4.."}[5m]) by (destination_workload, request_operation)',
+    "error_5xx": 'rate(istio_requests_total{response_code=~"5.."}[5m]) by (destination_workload, request_operation)',
+
+    # Retry / failure signals
+    "retry_rate": 'rate(istio_requests_total{response_flags=~"URX|UR"}[5m]) by (destination_workload, request_operation)',
+    "timeout_rate": 'rate(istio_requests_total{response_flags=~"UT|UO"}[5m]) by (destination_workload, request_operation)',
+
+    # Dependency / fan-out (source → destination)
+    "call_rate_edges": 'rate(istio_requests_total[5m]) by (source_workload, destination_workload, request_operation)',
+    
+    # Saturation
+    "inflight_requests": 'istio_requests_in_flight by (destination_workload)',
+
+    # Resource usage (service-level)
+    "cpu_usage": 'rate(container_cpu_usage_seconds_total{namespace="default"}[5m]) by (pod)',
+    "memory_usage": 'container_memory_usage_bytes{namespace="default"} by (pod)',
+
+    "slo_compliance_200ms": 'sum(rate(istio_request_duration_milliseconds_bucket{le="200"}[5m])) by (destination_workload, request_operation) / sum(rate(istio_request_duration_milliseconds_bucket{le="+Inf"}[5m])) by (destination_workload, request_operation)',
+    "slo_compliance_500ms": 'sum(rate(istio_request_duration_milliseconds_bucket{le="500"}[5m])) by (destination_workload, request_operation) / sum(rate(istio_request_duration_milliseconds_bucket{le="+Inf"}[5m])) by (destination_workload, request_operation)',
+
+}
+
+# prints log with timestamp
 def log(msg):
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}")
 
+# saves data to output file
 def save(data, filename):
     path = os.path.join(OUTPUT_DIR, filename)
     with open(path, "w") as f:
@@ -58,6 +85,7 @@ def save(data, filename):
     log(f"  Saved {filename} ({size:,} bytes)")
     return path
 
+# checks id Prometheus and Zipkins are active
 def check_connectivity():
     log("Checking connectivity...")
     for name, url in [
@@ -72,6 +100,7 @@ def check_connectivity():
             log(f"  ERROR: Cannot reach {name} at {url}: {e}")
             log(f"  Make sure port-forward is running.")
             sys.exit(1)
+
 
 def collect_zipkin_services():
     log("Fetching Zipkin service list...")
@@ -169,11 +198,16 @@ def collect_prometheus_range():
     step = "15s"
 
     range_queries = {
-        "request_rate": 'rate(istio_requests_total[1m])',
-        "p99_latency":  'histogram_quantile(0.99, rate(istio_request_duration_milliseconds_bucket[1m]))',
-        "error_rate":   'rate(istio_requests_total{response_code!~"2.."}[1m])',
-        "cpu_usage":    'rate(container_cpu_usage_seconds_total{namespace="default"}[1m])',
-        "memory_usage": 'container_memory_usage_bytes{namespace="default"}',
+        "request_rate": 'rate(istio_requests_total[1m]) by (destination_workload, request_operation)',
+        "p99_latency":  'histogram_quantile(0.99, rate(istio_request_duration_milliseconds_bucket[1m])) by (destination_workload, request_operation)',
+        "error_rate":   'rate(istio_requests_total{response_code!~"2.."}[1m]) by (destination_workload, request_operation)',
+        "error_4xx":    'rate(istio_requests_total{response_code=~"4.."}[1m]) by (destination_workload, request_operation)',
+        "error_5xx":    'rate(istio_requests_total{response_code=~"5.."}[1m]) by (destination_workload, request_operation)',
+        "timeout_rate": 'rate(istio_requests_total{response_flags=~"UT|UO"}[1m]) by (destination_workload, request_operation)',
+        "slo_compliance_200ms": 'sum(rate(istio_request_duration_milliseconds_bucket{le="200"}[1m])) by (destination_workload, request_operation) / sum(rate(istio_request_duration_milliseconds_bucket{le="+Inf"}[1m])) by (destination_workload, request_operation)',
+        "cpu_usage":    'rate(container_cpu_usage_seconds_total{namespace="default"}[1m]) by (pod)',
+        "memory_usage": 'container_memory_usage_bytes{namespace="default"} by (pod)',
+        "retry_rate":   'rate(istio_requests_total{response_flags=~"URX|UR"}[1m]) by (destination_workload, request_operation)',
     }
 
     results = {}
