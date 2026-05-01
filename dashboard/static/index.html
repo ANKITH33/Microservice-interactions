@@ -885,6 +885,13 @@ const endpointLabel = op => {
   const useful = parts.filter(p => !/^\{.*\}$/.test(p) && !/^(api|v\d+)$/i.test(p));
   return (useful.at(-1) || parts.at(-1) || raw || 'unknown').slice(0, 24);
 };
+const endpointGraphLabel = n => {
+  if (n?.synthetic) {
+    const svc = shortSvc(n.service).replace(/service$/i, '') || 'service';
+    return `${svc} outbound`;
+  }
+  return endpointLabel(n?.operation);
+};
 
 function badge(sev) {
   const s = (sev||'low').toLowerCase();
@@ -1659,14 +1666,14 @@ function renderEndpointGraph(gEp, epM) {
   const scoreMap = {};
   (epM||[]).forEach(m=>{ scoreMap[m.id] = m.bottleneck_score||0; });
 
-  const nodeById = new Map((gEp.nodes || []).map(n => [n.id, {...n, label:endpointLabel(n.operation)}]));
+  const nodeById = new Map((gEp.nodes || []).map(n => [n.id, {...n, label:endpointGraphLabel(n)}]));
   (gEp.edges || []).forEach(e => {
     if (!nodeById.has(e.caller_id)) {
       nodeById.set(e.caller_id, {
         id: e.caller_id,
         service: e.caller_svc,
         operation: e.caller_op,
-        label: endpointLabel(e.caller_op),
+        label: endpointGraphLabel({service: e.caller_svc, operation: e.caller_op, synthetic: true}),
         call_count: e.call_count || 1,
         ais: 1,
         synthetic: true
@@ -1685,8 +1692,17 @@ function renderEndpointGraph(gEp, epM) {
     }
   });
 
+  const linkedIds = new Set();
+  (gEp.edges || []).forEach(e => {
+    linkedIds.add(e.caller_id);
+    linkedIds.add(e.callee_id);
+  });
+
   const nodes = [...nodeById.values()]
-    .sort((a,b)=>(b.call_count||0)-(a.call_count||0))
+    .sort((a,b)=>{
+      const linkRank = (linkedIds.has(b.id) ? 1 : 0) - (linkedIds.has(a.id) ? 1 : 0);
+      return linkRank || ((b.call_count||0)-(a.call_count||0));
+    })
     .slice(0,50);
   const nodeIds = new Set(nodes.map(n=>n.id));
   const links = (gEp.edges || [])
@@ -1702,7 +1718,7 @@ function renderEndpointGraph(gEp, epM) {
   };
 
   forceGraph('g-ep', nodes, links, {
-    sizeKey:'ais',
+    sizeKey:'call_count',
     colorFn,
     labelKey:d=>d.label || endpointLabel(d.operation),
     height:580,

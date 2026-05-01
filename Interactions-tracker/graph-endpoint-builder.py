@@ -28,6 +28,7 @@ OUTPUT_DIR = os.path.join(CURRENT_DIR, "outputs")
 INPUT_FILE = os.path.join(OUTPUT_DIR, "parsed-spans.json")
 
 MIN_EDGE_CALLS = 0
+OUTBOUND_CALLER_OP = "outbound"
 
 
 def percentile(data: list, p: float) -> float:
@@ -77,11 +78,15 @@ def build_graph(spans: list) -> dict:
         }
 
     # ── Build edges ────────────────────────────────────────────────────────
+    endpoint_ids = set(nodes)
     edge_data: dict = {}
     for s in spans:
-        if not s.get("caller_svc") or not s.get("caller_op"):
+        if not s.get("caller_svc"):
             continue
-        key = (s["caller_svc"], s["caller_op"], s["service"], s["operation"])
+        caller_op = s.get("caller_op")
+        if not caller_op or f"{s['caller_svc']}:{caller_op}" not in endpoint_ids:
+            caller_op = OUTBOUND_CALLER_OP
+        key = (s["caller_svc"], caller_op, s["service"], s["operation"])
         if key not in edge_data:
             edge_data[key] = {"durations": [], "errors": 0}
         edge_data[key]["durations"].append(s["duration_ms"])
@@ -93,8 +98,28 @@ def build_graph(spans: list) -> dict:
         durs = data["durations"]
         if len(durs) < MIN_EDGE_CALLS:
             continue
+        caller_id = f"{csvc}:{cop}"
+        if caller_id not in nodes:
+            nodes[caller_id] = {
+                "id": caller_id,
+                "service": csvc,
+                "operation": cop,
+                "call_count": len(durs),
+                "error_count": 0,
+                "error_rate": 0.0,
+                "latency": {
+                    "p50_ms": 0.0,
+                    "p95_ms": 0.0,
+                    "p99_ms": 0.0,
+                    "mean_ms": 0.0,
+                    "max_ms": 0.0,
+                },
+                "synthetic": True,
+            }
+        else:
+            nodes[caller_id]["call_count"] = max(nodes[caller_id]["call_count"], len(durs))
         edges.append({
-            "caller_id":   f"{csvc}:{cop}",
+            "caller_id":   caller_id,
             "callee_id":   f"{esvc}:{eop}",
             "caller_svc":  csvc,
             "caller_op":   cop,
