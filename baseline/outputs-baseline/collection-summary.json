@@ -1,5 +1,5 @@
 {
-  "collected_at": "2026-05-01T05:45:40.806568+00:00",
+  "collected_at": "2026-05-01T06:47:10.042168+00:00",
   "lookback_minutes": 10,
   "zipkin": {
     "services_found": 11,
@@ -16,18 +16,18 @@
       "recommendationservice.default",
       "shippingservice.default"
     ],
-    "total_traces": 1409,
+    "total_traces": 1517,
     "dependency_links": 15,
     "dependencies": [
       {
         "parent": "frontend.default",
-        "child": "productcatalogservice.default",
-        "callCount": 522
+        "child": "adservice.default",
+        "callCount": 72
       },
       {
         "parent": "frontend.default",
-        "child": "currencyservice.default",
-        "callCount": 350
+        "child": "productcatalogservice.default",
+        "callCount": 550
       },
       {
         "parent": "recommendationservice.default",
@@ -40,19 +40,19 @@
         "callCount": 84
       },
       {
-        "parent": "loadgenerator.default",
-        "child": "frontend.default",
-        "callCount": 119
+        "parent": "frontend.default",
+        "child": "currencyservice.default",
+        "callCount": 380
       },
       {
         "parent": "frontend.default",
         "child": "cartservice.default",
-        "callCount": 107
+        "callCount": 108
       },
       {
-        "parent": "frontend.default",
-        "child": "adservice.default",
-        "callCount": 68
+        "parent": "loadgenerator.default",
+        "child": "frontend.default",
+        "callCount": 119
       },
       {
         "parent": "frontend.default",
@@ -60,39 +60,39 @@
         "callCount": 25
       },
       {
-        "parent": "frontend.default",
-        "child": "checkoutservice.default",
-        "callCount": 7
-      },
-      {
         "parent": "checkoutservice.default",
         "child": "emailservice.default",
-        "callCount": 6
+        "callCount": 5
       },
       {
         "parent": "checkoutservice.default",
         "child": "cartservice.default",
-        "callCount": 12
+        "callCount": 10
       },
       {
         "parent": "checkoutservice.default",
         "child": "shippingservice.default",
-        "callCount": 12
+        "callCount": 10
       },
       {
         "parent": "checkoutservice.default",
         "child": "paymentservice.default",
-        "callCount": 6
+        "callCount": 5
       },
       {
         "parent": "checkoutservice.default",
         "child": "currencyservice.default",
-        "callCount": 13
+        "callCount": 17
       },
       {
         "parent": "checkoutservice.default",
         "child": "productcatalogservice.default",
-        "callCount": 7
+        "callCount": 12
+      },
+      {
+        "parent": "frontend.default",
+        "child": "checkoutservice.default",
+        "callCount": 5
       }
     ]
   },

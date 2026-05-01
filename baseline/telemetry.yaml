@@ -1,0 +1,24 @@
+apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+  name: mesh-default
+  namespace: istio-system
+spec:
+  metrics:
+  - providers:
+    - name: prometheus
+    overrides:
+    - match:
+        metric: REQUEST_COUNT
+      tagOverrides:
+        grpc_method:
+          value: request.grpc.method
+        grpc_service:
+          value: request.grpc.service
+    - match:
+        metric: REQUEST_DURATION
+      tagOverrides:
+        grpc_method:
+          value: request.grpc.method
+        grpc_service:
+          value: request.grpc.service

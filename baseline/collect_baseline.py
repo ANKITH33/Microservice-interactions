@@ -39,28 +39,28 @@ LOOKBACK_SEC    = 10 * 60           # 10 minutes
 #list of prometheus queries
 PROMETHEUS_QUERIES = {
     # Traffic
-    "request_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default"}[5m])) by (destination_workload, request_operation)',
-    "total_requests": 'sum(increase(istio_requests_total{destination_workload_namespace="default"}[5m])) by (destination_workload, request_operation)',
+    "request_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default"}[5m])) by (destination_workload)',
+    "total_requests": 'sum(increase(istio_requests_total{destination_workload_namespace="default"}[5m])) by (destination_workload)',
 
     # Latency
-    "p50_latency": 'histogram_quantile(0.50, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default"}[5m])) by (le, destination_workload, request_operation))',
-    "p95_latency": 'histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default"}[5m])) by (le, destination_workload, request_operation))',
-    "p99_latency": 'histogram_quantile(0.99, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default"}[5m])) by (le, destination_workload, request_operation))',
+    "p50_latency": 'histogram_quantile(0.50, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default"}[5m])) by (le, destination_workload))',
+    "p95_latency": 'histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default"}[5m])) by (le, destination_workload))',
+    "p99_latency": 'histogram_quantile(0.99, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default"}[5m])) by (le, destination_workload))',
 
     # Histogram
-    "request_duration": 'sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default"}[5m])) by (le, destination_workload, request_operation)',
+    "request_duration": 'sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default"}[5m])) by (le, destination_workload)',
 
     # Errors
-    "error_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default",response_code!~"2.."}[5m])) by (destination_workload, request_operation)',
-    "error_4xx":  'sum(rate(istio_requests_total{destination_workload_namespace="default",response_code=~"4.."}[5m])) by (destination_workload, request_operation)',
-    "error_5xx":  'sum(rate(istio_requests_total{destination_workload_namespace="default",response_code=~"5.."}[5m])) by (destination_workload, request_operation)',
+    "error_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default",response_code!~"2.."}[5m])) by (destination_workload)',
+    "error_4xx":  'sum(rate(istio_requests_total{destination_workload_namespace="default",response_code=~"4.."}[5m])) by (destination_workload)',
+    "error_5xx":  'sum(rate(istio_requests_total{destination_workload_namespace="default",response_code=~"5.."}[5m])) by (destination_workload)',
 
     # Retry / timeout
-    "retry_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default",response_flags!="-" }[5m])) by (destination_workload, request_operation)',
-    "timeout_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default",response_flags=~"UT|UO"}[5m])) by (destination_workload, request_operation)',
+    "retry_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default",response_flags=~"UR|URX"}[5m])) by (destination_workload)',
+    "timeout_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default",response_flags=~"UT|UO"}[5m])) by (destination_workload)',
 
     # Dependency graph
-    "call_rate_edges": 'sum(rate(istio_requests_total{destination_workload_namespace="default"}[5m])) by (source_workload, destination_workload, request_operation)',
+    "call_rate_edges": 'sum(rate(istio_requests_total{destination_workload_namespace="default"}[5m])) by (source_workload, destination_workload)',
 
 
     # Resource usage
@@ -68,8 +68,8 @@ PROMETHEUS_QUERIES = {
     "memory_usage": 'sum(container_memory_usage_bytes{namespace="default"}) by (pod)',
 
     # SLO
-    "slo_compliance_200ms": 'sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default",le="200"}[5m])) by (destination_workload, request_operation) / sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default",le="+Inf"}[5m])) by (destination_workload, request_operation)',
-    "slo_compliance_500ms": 'sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default",le="500"}[5m])) by (destination_workload, request_operation) / sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default",le="+Inf"}[5m])) by (destination_workload, request_operation)',
+    "slo_compliance_200ms": 'sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default",le="200"}[5m])) by (destination_workload) / sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default",le="+Inf"}[5m])) by (destination_workload)',
+    "slo_compliance_500ms": 'sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default",le="500"}[5m])) by (destination_workload) / sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default",le="+Inf"}[5m])) by (destination_workload)',
 }
 
 # prints log with timestamp
@@ -198,18 +198,18 @@ def collect_prometheus_range():
     step = "15s"
 
     range_queries = {
-        "request_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default"}[1m])) by (destination_workload, request_operation)',
+        "request_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default"}[1m])) by (destination_workload)',
 
-        "p99_latency": 'histogram_quantile(0.99, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default"}[1m])) by (le, destination_workload, request_operation))',
+        "p99_latency": 'histogram_quantile(0.99, sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default"}[1m])) by (le, destination_workload))',
 
-        "error_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default",response_code!~"2.."}[1m])) by (destination_workload, request_operation)',
-        "error_4xx":  'sum(rate(istio_requests_total{destination_workload_namespace="default",response_code=~"4.."}[1m])) by (destination_workload, request_operation)',
-        "error_5xx":  'sum(rate(istio_requests_total{destination_workload_namespace="default",response_code=~"5.."}[1m])) by (destination_workload, request_operation)',
+        "error_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default",response_code!~"2.."}[1m])) by (destination_workload)',
+        "error_4xx":  'sum(rate(istio_requests_total{destination_workload_namespace="default",response_code=~"4.."}[1m])) by (destination_workload)',
+        "error_5xx":  'sum(rate(istio_requests_total{destination_workload_namespace="default",response_code=~"5.."}[1m])) by (destination_workload)',
 
-        "timeout_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default",response_flags=~"UT|UO"}[1m])) by (destination_workload, request_operation)',
-        "retry_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default",response_flags!="-" }[1m])) by (destination_workload, request_operation)',
+        "timeout_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default",response_flags=~"UT|UO"}[1m])) by (destination_workload)',
+        "retry_rate": 'sum(rate(istio_requests_total{destination_workload_namespace="default",response_flags=~"UR|URX"}[1m])) by (destination_workload)',
 
-        "slo_compliance_200ms": 'sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default",le="200"}[1m])) by (destination_workload, request_operation) / sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default",le="+Inf"}[1m])) by (destination_workload, request_operation)',
+        "slo_compliance_200ms": 'sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default",le="200"}[1m])) by (destination_workload) / sum(rate(istio_request_duration_milliseconds_bucket{destination_workload_namespace="default",le="+Inf"}[1m])) by (destination_workload)',
 
         "cpu_usage": 'sum(rate(container_cpu_usage_seconds_total{namespace="default"}[1m])) by (pod)',
         "memory_usage": 'sum(container_memory_usage_bytes{namespace="default"}) by (pod)',
