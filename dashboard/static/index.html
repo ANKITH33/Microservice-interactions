@@ -243,7 +243,7 @@ body {
 
 .kpi-val {
   font-family: var(--mono);
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   line-height: 1;
   color: var(--text);
@@ -307,13 +307,13 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 thead th {
   padding: 9px 12px;
   text-align: left;
-  font-size: 8px;
+  font-size: 11px;
   color: var(--text3);
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -335,8 +335,8 @@ td.r { text-align: right; }
 td.c { text-align: center; }
 td.dim { color: var(--text2); }
 td.mono { font-family: var(--mono); }
-td.trunc { max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
-td.ltrunc { max-width: 300px; overflow: hidden; text-overflow: ellipsis; }
+td.trunc { max-width: 420px; overflow: visible; text-overflow: unset; white-space: normal; word-break: break-word; }
+td.ltrunc { max-width: 600px; white-space: normal; word-break: break-word; }
 
 /* ─── BADGES ─── */
 .badge {
@@ -904,27 +904,60 @@ function hbar(svgId, data, {keyFn, valFn, color=C.hi, max=12, fmtFn=R, label=''}
   const el = $(svgId); if (!el || !data?.length) return;
   const items = data.slice(0,max);
   const W = el.closest('.chart-body')?.clientWidth || el.parentElement?.clientWidth || 600;
-  const BH = 17, GAP = 5, PL = 145, PR = 55, PT = 6, PB = 6;
+  const BH = 17, GAP = 5, PR = 80, PT = 6, PB = 6;
+  const PL = Math.max(
+    320,
+    d3.max(items, d => (keyFn(d) || '').length) * 7
+  );
   const H = items.length * (BH+GAP) + PT + PB;
   el.setAttribute('viewBox',`0 0 ${W} ${H}`);
   el.setAttribute('height', H);
   const maxV = d3.max(items, valFn) || 1;
-  const xsc = d3.scaleLinear().domain([0, maxV]).range([0, W-PL-PR]);
+  const X0 = PL + 10;
+
+  const xsc = d3.scaleLinear()
+    .domain([0, maxV])
+    .range([0, W - X0 - PR]);
   const svg = d3.select(el); svg.selectAll('*').remove();
 
   items.forEach((d,i) => {
     const y = PT + i*(BH+GAP);
-    const bw = xsc(valFn(d));
+    const bw = Math.min(xsc(valFn(d)), W - X0 - PR);
     const g = svg.append('g');
-    g.append('text').attr('x',PL-6).attr('y',y+BH/2+4).attr('text-anchor','end')
-      .attr('font-size',10).attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
-      .text((keyFn(d)||'').slice(0,20));
-    g.append('rect').attr('x',PL).attr('y',y).attr('width',W-PL-PR).attr('height',BH)
-      .attr('fill',C.bg3).attr('rx',2);
-    g.append('rect').attr('x',PL).attr('y',y).attr('width',Math.max(bw,2)).attr('height',BH)
-      .attr('fill',color).attr('rx',2).attr('opacity',.8);
-    g.append('text').attr('x',PL+bw+5).attr('y',y+BH/2+4)
-      .attr('font-size',10).attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
+
+
+    g.append('text')
+      .attr('x', 10)
+      .attr('y', y + BH/2 + 4)
+      .attr('text-anchor', 'start')
+      .attr('font-size', 12)
+      .attr('fill', C.text2)
+      .attr('font-family', 'JetBrains Mono,monospace')
+      .text(keyFn(d) || '');
+
+    g.append('rect')
+      .attr('x', X0)
+      .attr('y', y)
+      .attr('width', W - X0 - PR)   // FIX
+      .attr('height', BH)
+      .attr('fill', C.bg3)
+      .attr('rx', 2);
+
+    g.append('rect')
+      .attr('x', X0)
+      .attr('y', y)
+      .attr('width', Math.max(bw,2))
+      .attr('height', BH)
+      .attr('fill', color)
+      .attr('rx', 2)
+      .attr('opacity', .8);
+
+    g.append('text')
+      .attr('x', X0 + bw + 5)   // FIX
+      .attr('y', y + BH/2 + 4)
+      .attr('font-size', 12)
+      .attr('fill', C.text2)
+      .attr('font-family', 'JetBrains Mono,monospace')
       .text(fmtFn(valFn(d)));
   });
 }
@@ -932,8 +965,15 @@ function hbar(svgId, data, {keyFn, valFn, color=C.hi, max=12, fmtFn=R, label=''}
 function dualHbar(svgId, data, {keyFn, val1Fn, val2Fn, color1=C.ye, color2=C.hi, max=12}={}) {
   const el = $(svgId); if (!el || !data?.length) return;
   const items = data.slice(0,max);
-  const W = el.closest('.chart-body')?.clientWidth || 600;
-  const BH = 7, GAP = 12, PL = 145, PR = 55, PT = 6, PB = 6;
+  const W = Math.max(
+    el.closest('.chart-body')?.clientWidth || 600,
+    900
+  );
+  const BH = 7, GAP = 12, PR = 55, PT = 6, PB = 6;
+  const PL = Math.max(
+    220,
+    d3.max(items, d => (keyFn(d) || '').length) * 7
+  );
   const H = items.length * (BH*2+GAP+2) + PT + PB;
   el.setAttribute('viewBox',`0 0 ${W} ${H}`);
   el.setAttribute('height', H);
@@ -945,8 +985,8 @@ function dualHbar(svgId, data, {keyFn, val1Fn, val2Fn, color1=C.ye, color2=C.hi,
     const y = PT + i*(BH*2+GAP+2);
     const g = svg.append('g');
     g.append('text').attr('x',PL-6).attr('y',y+BH*2/2+8).attr('text-anchor','end')
-      .attr('font-size',10).attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
-      .text((keyFn(d)||'').slice(0,20));
+      .attr('font-size',12).attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
+      .text(keyFn(d) || '');
     // p50
     const w1 = xsc(val1Fn(d));
     g.append('rect').attr('x',PL).attr('y',y).attr('width',W-PL-PR).attr('height',BH)
@@ -968,7 +1008,10 @@ function dualHbar(svgId, data, {keyFn, val1Fn, val2Fn, color1=C.ye, color2=C.hi,
 
 function scatter(svgId, data, {xKey, yKey, labelKey, xLabel='req/s', yLabel='p99 ms'}={}) {
   const el = $(svgId); if (!el || !data?.length) return;
-  const W = el.closest('.chart-body')?.clientWidth || 600;
+  const W = Math.max(
+    el.closest('.chart-body')?.clientWidth || 600,
+    900
+  );
   const H = +el.getAttribute('height') || 260;
   const pad = {t:20, r:20, b:40, l:70};
   el.setAttribute('viewBox', `0 0 ${W} ${H}`);
@@ -1137,7 +1180,11 @@ function renderOverview(bn) {
     color: C.re, max:12, fmtFn: R4
   });
   hbar('c-bn-ep', epBn, {
-    keyFn: d=>(d.operation||'').split('/').pop().slice(0,28),
+    keyFn: d => {
+      const svc = (d.service || '').replace('.default','');
+      const op  = (d.operation || '').split('/').pop();
+      return `${svc}:${op}`;
+    },
     valFn: d=>d.bottleneck_score||0,
     color: C.pu, max:10, fmtFn: R
   });

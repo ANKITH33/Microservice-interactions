@@ -6,9 +6,7 @@
       "bottleneck_score": 154.1098,
       "bottleneck_score_adj": 154.1098,
       "risk_score": 0.1944,
-      "reasons": [
-        "high fan-in \u2014 AIS=3 callers, 1 replica(s) \u2192 effective AIS/replica = 3.00"
-      ],
+      "reasons": [],
       "latency": {
         "p50_ms": 0.796,
         "p95_ms": 1.056,
@@ -55,8 +53,7 @@
       "bottleneck_score_adj": 91.1641,
       "risk_score": 0.293,
       "reasons": [
-        "high tail latency \u2014 p99/p50 = 2.5\u00d7 (p50=1.8ms, p99=3.6ms)",
-        "high fan-in \u2014 AIS=2 callers, 1 replica(s) \u2192 effective AIS/replica = 2.00"
+        "high tail latency \u2014 p99/p50 = 2.5\u00d7 (p50=1.8ms, p99=3.6ms)"
       ],
       "latency": {
         "p50_ms": 1.803,
@@ -103,9 +100,7 @@
       "bottleneck_score": 16.5751,
       "bottleneck_score_adj": 16.5751,
       "risk_score": 0.0979,
-      "reasons": [
-        "high fan-in \u2014 AIS=2 callers, 1 replica(s) \u2192 effective AIS/replica = 2.00"
-      ],
+      "reasons": [],
       "latency": {
         "p50_ms": 2.042,
         "p95_ms": 2.586,
@@ -251,9 +246,7 @@
       "bottleneck_score": 154.1098,
       "bottleneck_score_adj": 154.1098,
       "risk_score": 0.1944,
-      "reasons": [
-        "high fan-in \u2014 AIS=2 caller(s), 1 replica(s)"
-      ],
+      "reasons": [],
       "latency": {
         "p50_ms": 0.612,
         "p95_ms": 1.016,
@@ -294,8 +287,7 @@
       "bottleneck_score_adj": 91.1641,
       "risk_score": 0.293,
       "reasons": [
-        "high tail latency \u2014 p99/p50 = 2.5\u00d7 (p50=1.5ms, p99=3.6ms)",
-        "high fan-in \u2014 AIS=2 caller(s), 1 replica(s)"
+        "high tail latency \u2014 p99/p50 = 2.5\u00d7 (p50=1.5ms, p99=3.6ms)"
       ],
       "latency": {
         "p50_ms": 1.465,
@@ -336,9 +328,7 @@
       "bottleneck_score": 86.064,
       "bottleneck_score_adj": 86.064,
       "risk_score": 0.0819,
-      "reasons": [
-        "high fan-in \u2014 AIS=2 caller(s), 1 replica(s)"
-      ],
+      "reasons": [],
       "latency": {
         "p50_ms": 0.796,
         "p95_ms": 1.056,
@@ -414,9 +404,7 @@
       "bottleneck_score": 16.5751,
       "bottleneck_score_adj": 16.5751,
       "risk_score": 0.0979,
-      "reasons": [
-        "high fan-in \u2014 AIS=2 caller(s), 1 replica(s)"
-      ],
+      "reasons": [],
       "latency": {
         "p50_ms": 1.919,
         "p95_ms": 2.586,
@@ -548,7 +536,7 @@
   },
   "thresholds": {
     "tail_ratio": 2.0,
-    "high_ais": 2,
+    "high_ais": 4,
     "high_error": 0.01,
     "low_cohesion": 0.4
   }

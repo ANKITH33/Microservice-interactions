@@ -27,7 +27,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = os.path.join(CURRENT_DIR, "outputs")
 INPUT_FILE = os.path.join(OUTPUT_DIR, "parsed-spans.json")
 
-MIN_EDGE_CALLS = 10
+MIN_EDGE_CALLS = 0
 
 
 def percentile(data: list, p: float) -> float:

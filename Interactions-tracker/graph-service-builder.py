@@ -32,7 +32,7 @@ INPUT_FILE = os.path.join(OUTPUT_DIR, "parsed-spans.json")
 # Statistical significance threshold: minimum calls on an edge to include it.
 # Rationale: 10 calls in a 10-minute window ≈ 1 call/min — enough to estimate
 # a latency distribution.  Below this the p99 estimate is meaningless.
-MIN_EDGE_CALLS = 10
+MIN_EDGE_CALLS = 0
 
 
 def percentile(data: list, p: float) -> float:

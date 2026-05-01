@@ -41,7 +41,7 @@ OUTPUT_DIR = CURRENT_DIR / "outputs"
 
 # ── Configurable thresholds ────────────────────────────────────────────────
 TAIL_RATIO_THRESHOLD   = 2.0   # p99/p50 above this → high tail latency flag
-HIGH_AIS_THRESHOLD     = 2     # AIS above this with low replicas → high fan-in flag
+HIGH_AIS_THRESHOLD     = 4     # AIS above this with low replicas → high fan-in flag
 HIGH_ERROR_THRESHOLD   = 0.01  # 1% error rate → error flag
 LOW_COHESION_THRESHOLD = 0.4   # TSIC below this → low cohesion flag
 

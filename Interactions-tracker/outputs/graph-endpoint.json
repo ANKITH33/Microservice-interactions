@@ -33,7 +33,7 @@
         "mean_ms": 1.836,
         "max_ms": 4.563
       },
-      "ais": 1,
+      "ais": 2,
       "ads": 0,
       "acs": 0,
       "sdp": 0.0
@@ -71,7 +71,7 @@
         "mean_ms": 1.16,
         "max_ms": 1.521
       },
-      "ais": 0,
+      "ais": 1,
       "ads": 0,
       "acs": 0,
       "sdp": 0.0
@@ -90,7 +90,7 @@
         "mean_ms": 1.513,
         "max_ms": 2.112
       },
-      "ais": 0,
+      "ais": 1,
       "ads": 0,
       "acs": 0,
       "sdp": 0.0
@@ -109,7 +109,7 @@
         "mean_ms": 0.58,
         "max_ms": 0.747
       },
-      "ais": 0,
+      "ais": 1,
       "ads": 0,
       "acs": 0,
       "sdp": 0.0
@@ -128,7 +128,7 @@
         "mean_ms": 1.735,
         "max_ms": 2.359
       },
-      "ais": 0,
+      "ais": 1,
       "ads": 0,
       "acs": 0,
       "sdp": 0.0
@@ -166,7 +166,7 @@
         "mean_ms": 0.656,
         "max_ms": 0.951
       },
-      "ais": 1,
+      "ais": 2,
       "ads": 0,
       "acs": 0,
       "sdp": 0.0
@@ -204,7 +204,7 @@
         "mean_ms": 26.14,
         "max_ms": 37.846
       },
-      "ais": 0,
+      "ais": 1,
       "ads": 0,
       "acs": 0,
       "sdp": 0.0
@@ -418,6 +418,96 @@
       }
     },
     {
+      "caller_id": "checkoutservice.default:/hipstershop.CartService/EmptyCart",
+      "callee_id": "cartservice.default:/hipstershop.CartService/EmptyCart",
+      "caller_svc": "checkoutservice.default",
+      "caller_op": "/hipstershop.CartService/EmptyCart",
+      "callee_svc": "cartservice.default",
+      "callee_op": "/hipstershop.CartService/EmptyCart",
+      "call_count": 5,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.108,
+        "p95_ms": 1.237,
+        "p99_ms": 1.237,
+        "mean_ms": 1.088,
+        "max_ms": 1.237
+      }
+    },
+    {
+      "caller_id": "checkoutservice.default:/hipstershop.CartService/GetCart",
+      "callee_id": "cartservice.default:/hipstershop.CartService/GetCart",
+      "caller_svc": "checkoutservice.default",
+      "caller_op": "/hipstershop.CartService/GetCart",
+      "callee_svc": "cartservice.default",
+      "callee_op": "/hipstershop.CartService/GetCart",
+      "call_count": 5,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.142,
+        "p95_ms": 1.487,
+        "p99_ms": 1.487,
+        "mean_ms": 1.166,
+        "max_ms": 1.487
+      }
+    },
+    {
+      "caller_id": "checkoutservice.default:/hipstershop.EmailService/SendOrderConfirmation",
+      "callee_id": "emailservice.default:/hipstershop.EmailService/SendOrderConfirmation",
+      "caller_svc": "checkoutservice.default",
+      "caller_op": "/hipstershop.EmailService/SendOrderConfirmation",
+      "callee_svc": "emailservice.default",
+      "callee_op": "/hipstershop.EmailService/SendOrderConfirmation",
+      "call_count": 5,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.328,
+        "p95_ms": 1.883,
+        "p99_ms": 1.883,
+        "mean_ms": 1.393,
+        "max_ms": 1.883
+      }
+    },
+    {
+      "caller_id": "checkoutservice.default:/hipstershop.ShippingService/ShipOrder",
+      "callee_id": "shippingservice.default:/hipstershop.ShippingService/ShipOrder",
+      "caller_svc": "checkoutservice.default",
+      "caller_op": "/hipstershop.ShippingService/ShipOrder",
+      "callee_svc": "shippingservice.default",
+      "callee_op": "/hipstershop.ShippingService/ShipOrder",
+      "call_count": 5,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 0.545,
+        "p95_ms": 0.747,
+        "p99_ms": 0.747,
+        "mean_ms": 0.559,
+        "max_ms": 0.747
+      }
+    },
+    {
+      "caller_id": "checkoutservice.default:/hipstershop.PaymentService/Charge",
+      "callee_id": "paymentservice.default:/hipstershop.PaymentService/Charge",
+      "caller_svc": "checkoutservice.default",
+      "caller_op": "/hipstershop.PaymentService/Charge",
+      "callee_svc": "paymentservice.default",
+      "callee_op": "/hipstershop.PaymentService/Charge",
+      "call_count": 5,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 1.707,
+        "p95_ms": 2.359,
+        "p99_ms": 2.359,
+        "mean_ms": 1.688,
+        "max_ms": 2.359
+      }
+    },
+    {
       "caller_id": "checkoutservice.default:/hipstershop.CurrencyService/Convert",
       "callee_id": "currencyservice.default:/hipstershop.CurrencyService/Convert",
       "caller_svc": "checkoutservice.default",
@@ -436,6 +526,24 @@
       }
     },
     {
+      "caller_id": "checkoutservice.default:/hipstershop.ShippingService/GetQuote",
+      "callee_id": "shippingservice.default:/hipstershop.ShippingService/GetQuote",
+      "caller_svc": "checkoutservice.default",
+      "caller_op": "/hipstershop.ShippingService/GetQuote",
+      "callee_svc": "shippingservice.default",
+      "callee_op": "/hipstershop.ShippingService/GetQuote",
+      "call_count": 5,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 0.537,
+        "p95_ms": 0.772,
+        "p99_ms": 0.772,
+        "mean_ms": 0.575,
+        "max_ms": 0.772
+      }
+    },
+    {
       "caller_id": "checkoutservice.default:/hipstershop.ProductCatalogService/GetProduct",
       "callee_id": "productcatalogservice.default:/hipstershop.ProductCatalogService/GetProduct",
       "caller_svc": "checkoutservice.default",
@@ -451,6 +559,24 @@
         "p99_ms": 1.041,
         "mean_ms": 0.552,
         "max_ms": 1.041
+      }
+    },
+    {
+      "caller_id": "frontend.default:/hipstershop.CheckoutService/PlaceOrder",
+      "callee_id": "checkoutservice.default:/hipstershop.CheckoutService/PlaceOrder",
+      "caller_svc": "frontend.default",
+      "caller_op": "/hipstershop.CheckoutService/PlaceOrder",
+      "callee_svc": "checkoutservice.default",
+      "callee_op": "/hipstershop.CheckoutService/PlaceOrder",
+      "call_count": 5,
+      "error_count": 0,
+      "error_rate": 0.0,
+      "latency": {
+        "p50_ms": 24.338,
+        "p95_ms": 37.846,
+        "p99_ms": 37.846,
+        "mean_ms": 26.14,
+        "max_ms": 37.846
       }
     },
     {
@@ -582,7 +708,7 @@
   ],
   "summary": {
     "total_endpoints": 19,
-    "total_edges": 12,
-    "min_edge_calls": 10
+    "total_edges": 19,
+    "min_edge_calls": 0
   }
 }
