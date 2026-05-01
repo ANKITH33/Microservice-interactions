@@ -24,7 +24,6 @@ import statistics
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-BASE_DIR   = os.path.join(os.path.dirname(CURRENT_DIR), "baseline", "outputs-baseline")
 OUTPUT_DIR = os.path.join(CURRENT_DIR, "outputs")
 INPUT_FILE = os.path.join(OUTPUT_DIR, "parsed-spans.json")
 

@@ -37,7 +37,6 @@ from pathlib import Path
 
 CURRENT_DIR = Path(__file__).resolve().parent
 
-BASE_DIR = CURRENT_DIR.parent / "baseline" / "outputs-baseline"
 OUTPUT_DIR = CURRENT_DIR / "outputs"
 
 # ── Configurable thresholds ────────────────────────────────────────────────
@@ -103,11 +102,12 @@ def detect_service_bottlenecks(svc_metrics: list) -> list:
 
         # Cohesion
         tsic = m["cohesion"]["tsic"]
+        sidc_str = f"{m['cohesion']['sidc']:.3f}" if m['cohesion']['sidc'] is not None else "n/a"
         if tsic < LOW_COHESION_THRESHOLD and m["cohesion"]["num_endpoints"] > 1:
             reasons.append(
                 f"low cohesion — TSIC={tsic:.3f} with "
                 f"{m['cohesion']['num_endpoints']} endpoints "
-                f"(SIDC={m['cohesion']['sidc']:.3f}, SIUC={m['cohesion']['siuc']:.3f})"
+                f"(SIDC={sidc_str}, SIUC={m['cohesion']['siuc']:.3f})"
             )
 
         # Prometheus-level errors (control-plane view)
@@ -191,75 +191,34 @@ def detect_endpoint_bottlenecks(ep_metrics: list) -> list:
 
 # ── Critical path ──────────────────────────────────────────────────────────
 
-def find_critical_path(svc_graph: dict) -> dict:
+def load_critical_path(cp_data: dict) -> dict:
     """
-    Find the call chain with the highest cumulative p99 latency.
-
-    Algorithm: DFS from each entry-point service (services that are never
-    a callee in the filtered graph), maximising p99_ms along the path.
-    Cycle detection via a visited set prevents infinite loops in case the
-    graph has cycles (which can occur if spans are mis-attributed).
-
-    Returns: {"path": [...], "total_p99_ms": float, "latencies": [...]}
+    Use pre-computed critical path data from zipkin_parser.py.
+    Returns the highest-latency path from by_path, already trace-aware.
     """
-    nodes  = {n["service"]: n for n in svc_graph["nodes"]}
-    edges  = svc_graph["edges"]
+    by_path = cp_data.get("by_path", [])
+    if not by_path:
+        return {"path": [], "latencies_ms": [], "total_p99_ms": 0.0, "entry_points": []}
 
-    # Build adjacency list: caller → list of callees
-    adjacency: dict = {svc: [] for svc in nodes}
-    all_callees: set = set()
-    for e in edges:
-        adjacency[e["caller"]].append(e["callee"])
-        all_callees.add(e["callee"])
-
-    # Entry points = services that nobody calls (i.e. not a callee in any edge)
-    all_callers = set(e["caller"] for e in edges)
-    entry_points = all_callers - all_callees
-
-    def dfs(svc: str, visited: frozenset):
-        node      = nodes.get(svc, {})
-        own_p99   = node.get("latency", {}).get("p99_ms", 0.0)
-        best_path = [svc]
-        best_lats = [own_p99]
-        best_total = own_p99
-
-        for callee in adjacency.get(svc, []):
-            if callee in visited:
-                continue  # cycle guard
-            sub_path, sub_lats, sub_total = dfs(callee, visited | {callee})
-            total = own_p99 + sub_total
-            if total > best_total:
-                best_total = total
-                best_path  = [svc] + sub_path
-                best_lats  = [own_p99] + sub_lats
-
-        return best_path, best_lats, best_total
-
-    critical_path: list = []
-    critical_lats: list = []
-    critical_total = 0.0
-
-    for entry in entry_points:
-        path, lats, total = dfs(entry, frozenset({entry}))
-        if total > critical_total:
-            critical_total = total
-            critical_path  = path
-            critical_lats  = lats
-
+    # by_path is sorted by frequency; find highest latency path instead
+    best = max(by_path, key=lambda x: x["latency_ms_max"])
     return {
-        "path":          critical_path,
-        "latencies_ms":  [round(l, 3) for l in critical_lats],
-        "total_p99_ms":  round(critical_total, 3),
-        "entry_points":  sorted(entry_points),
+        "path":          best["path"],
+        "latencies_ms":  [],   # per-hop latencies not stored in by_path
+        "total_p99_ms":  best["latency_ms_max"],
+        "count":         best["count"],
+        "latency_ms_mean": best["latency_ms_mean"],
+        "total_traces":  cp_data.get("total_traces", 0),
+        "total_skipped": cp_data.get("total_skipped", 0),
     }
 
 
 # ── Main ───────────────────────────────────────────────────────────────────
 
-def detect(svc_metrics: list, ep_metrics: list, svc_graph: dict) -> dict:
+def detect(svc_metrics: list, ep_metrics: list, cp_data: dict) -> dict:
     svc_bottlenecks = detect_service_bottlenecks(svc_metrics)
     ep_bottlenecks  = detect_endpoint_bottlenecks(ep_metrics)
-    critical_path   = find_critical_path(svc_graph)
+    critical_path = load_critical_path(cp_data)
 
     return {
         "service_bottlenecks":  svc_bottlenecks[:TOP_N],
@@ -290,10 +249,10 @@ def main():
     print("Loading metrics and graph...")
     svc_metrics = _load("metrics-service.json")
     ep_metrics  = _load("metrics-endpoint.json")
-    svc_graph   = _load("graph-service.json")
+    cp_data = _load("critical-paths.json")
 
     print("Detecting bottlenecks...")
-    result = detect(svc_metrics, ep_metrics, svc_graph)
+    result = detect(svc_metrics, ep_metrics, cp_data)
 
     # ── Console report ─────────────────────────────────────────────────────
     print("\n" + "═" * 70)
@@ -337,10 +296,9 @@ def main():
     cp = result["critical_path"]
     path_str = " → ".join(cp["path"])
     print(f"\n  Path:      {path_str}")
-    if cp["latencies_ms"]:
-        lat_str = " + ".join(f"{l:.0f}" for l in cp["latencies_ms"])
-        print(f"  p99 (ms):  {lat_str} = {cp['total_p99_ms']:.1f}ms")
-    print(f"  Entry pts: {', '.join(cp['entry_points'])}")
+    print(f"  Max latency: {cp['total_p99_ms']:.1f}ms  "
+      f"(seen {cp.get('count', 0)}x across {cp.get('total_traces', 0)} traces, "
+      f"{cp.get('total_skipped', 0)} skipped)")
 
     print("\n" + "═" * 70)
     print("  ALL SERVICES — SCORE SUMMARY")
