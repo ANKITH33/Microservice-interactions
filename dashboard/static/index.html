@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSA Observability Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root {
+  --bg:        #080b10;
+  --bg2:       #0d1117;
+  --bg3:       #141a22;
+  --bg4:       #1a2130;
+  --line:      #1c2333;
+  --line2:     #243044;
+  --text:      #b8c4d4;
+  --text2:     #5c6e85;
+  --text3:     #2e3d52;
+  --hi:        #58a6ff;
+  --hi2:       #1f6feb;
+  --gr:        #3fb950;
+  --ye:        #d29922;
+  --re:        #f85149;
+  --pu:        #bc8cff;
+  --cy:        #39d0d8;
+  --or:        #f0883e;
+  --mono:      'JetBrains Mono', monospace;
+  --sans:      'DM Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 13px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── SIDEBAR ─── */
+#sidebar {
+  position: fixed;
+  left: 0; top: 0;
+  width: 210px;
+  height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  overflow-y: auto;
+}
+
+.sb-logo {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sb-logo-mark {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--hi);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.sb-logo-sub {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text3);
+  margin-top: 3px;
+  letter-spacing: .06em;
+}
+
+.sb-section-label {
+  padding: 14px 16px 4px;
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text3);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.sb-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text2);
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all .12s;
+  text-decoration: none;
+  letter-spacing: .02em;
+}
+
+.sb-link:hover { color: var(--text); background: var(--bg3); }
+.sb-link.active { color: var(--hi); border-left-color: var(--hi); background: rgba(88,166,255,.06); }
+
+.sb-icon { font-size: 11px; opacity: .7; }
+
+.sb-footer {
+  margin-top: auto;
+  padding: 12px 16px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+}
+
+.sb-footer .dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gr);
+  margin-right: 5px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ─── MAIN AREA ─── */
+#main {
+  margin-left: 210px;
+  padding: 0 28px 60px;
+  max-width: 1600px;
+}
+
+/* ─── PAGE HEADER ─── */
+.page-header {
+  padding: 28px 0 20px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.page-title {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.page-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+}
+
+/* ─── SECTIONS ─── */
+.section {
+  margin-bottom: 52px;
+  scroll-margin-top: 24px;
+}
+
+.sec-hdr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sec-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.sec-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+}
+
+.sec-divider {
+  margin-bottom: 24px;
+  border: none;
+  border-top: 1px solid var(--line);
+}
+
+/* ─── KPI GRID ─── */
+.kpi-row {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.kpi-4 { grid-template-columns: repeat(4, 1fr); }
+.kpi-3 { grid-template-columns: repeat(3, 1fr); }
+.kpi-5 { grid-template-columns: repeat(5, 1fr); }
+
+.kpi {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 14px 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.kpi.hi::before  { background: var(--hi); }
+.kpi.gr::before  { background: var(--gr); }
+.kpi.ye::before  { background: var(--ye); }
+.kpi.re::before  { background: var(--re); }
+.kpi.pu::before  { background: var(--pu); }
+.kpi.cy::before  { background: var(--cy); }
+.kpi.or::before  { background: var(--or); }
+
+.kpi-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text3);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.kpi-val {
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+}
+
+.kpi-val.re  { color: var(--re); }
+.kpi-val.ye  { color: var(--ye); }
+.kpi-val.gr  { color: var(--gr); }
+.kpi-val.hi  { color: var(--hi); }
+.kpi-val.pu  { color: var(--pu); }
+.kpi-val.cy  { color: var(--cy); }
+.kpi-val.or  { color: var(--or); }
+
+.kpi-sub {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+/* ─── GRID LAYOUTS ─── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.grid-3-2 { display: grid; grid-template-columns: 3fr 2fr; gap: 12px; margin-bottom: 12px; }
+
+/* ─── PANELS ─── */
+.panel {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.panel-hdr {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text2);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-body { padding: 14px; }
+
+/* ─── TABLES ─── */
+.tbl-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: auto;
+  margin-bottom: 14px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+thead th {
+  padding: 9px 12px;
+  text-align: left;
+  font-size: 8px;
+  color: var(--text3);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--line2);
+  white-space: nowrap;
+}
+
+thead th.r { text-align: right; }
+thead th.c { text-align: center; }
+
+tbody tr { border-bottom: 1px solid var(--line); transition: background .08s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--bg3); }
+
+td { padding: 8px 12px; white-space: nowrap; color: var(--text); }
+td.r { text-align: right; }
+td.c { text-align: center; }
+td.dim { color: var(--text2); }
+td.mono { font-family: var(--mono); }
+td.trunc { max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+td.ltrunc { max-width: 300px; overflow: hidden; text-overflow: ellipsis; }
+
+/* ─── BADGES ─── */
+.badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 2px;
+  font-size: 8px;
+  font-family: var(--mono);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.b-critical { background: rgba(188,140,255,.15); color: var(--pu); border: 1px solid rgba(188,140,255,.3); }
+.b-high     { background: rgba(248,81,73,.15);   color: var(--re); border: 1px solid rgba(248,81,73,.3); }
+.b-medium   { background: rgba(210,153,34,.15);  color: var(--ye); border: 1px solid rgba(210,153,34,.3); }
+.b-low      { background: rgba(63,185,80,.15);   color: var(--gr); border: 1px solid rgba(63,185,80,.3); }
+.b-ok       { background: rgba(57,208,216,.15);  color: var(--cy); border: 1px solid rgba(57,208,216,.3); }
+
+/* ─── CHARTS ─── */
+.chart-panel {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.chart-title {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text2);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.chart-body {
+  padding: 12px 14px;
+}
+
+svg { font-family: var(--mono); }
+
+/* ─── CRITICAL PATH ─── */
+.cp-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 14px;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.cp-node {
+  font-family: var(--mono);
+  font-size: 10px;
+  background: rgba(88,166,255,.08);
+  border: 1px solid rgba(88,166,255,.2);
+  color: var(--hi);
+  padding: 3px 9px;
+  border-radius: 2px;
+}
+
+.cp-arrow { color: var(--text3); font-size: 10px; }
+
+.cp-stat {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ye);
+  font-weight: 600;
+}
+
+/* ─── SLO BAR ─── */
+.slo-bar { height: 4px; background: var(--bg3); border-radius: 2px; margin-top: 4px; }
+.slo-fill { height: 4px; border-radius: 2px; }
+
+/* ─── REASONS LIST ─── */
+.reasons { display: flex; flex-direction: column; gap: 2px; }
+.reason { font-size: 9px; color: var(--text2); font-family: var(--mono); }
+.reason::before { content: "↳ "; color: var(--text3); }
+
+/* ─── TIME SERIES SPARKLINE ─── */
+.sparkline-svg { vertical-align: middle; }
+
+/* ─── LOADING / ERROR ─── */
+#overlay {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.load-logo {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--hi);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+
+.load-txt {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+  letter-spacing: .1em;
+  animation: blink 1.4s step-start infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+#overlay.gone { display: none; }
+
+.err-box {
+  background: rgba(248,81,73,.08);
+  border: 1px solid rgba(248,81,73,.2);
+  color: var(--re);
+  padding: 10px 14px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  margin-bottom: 16px;
+}
+
+/* ─── GRAPH CANVAS ─── */
+.graph-canvas {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  width: 100%;
+  cursor: grab;
+}
+
+.graph-canvas:active { cursor: grabbing; }
+
+/* ─── EDGE TABLE BADGE ─── */
+.rate-pill {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--cy);
+}
+</style>
+</head>
+<body>
+
+<!-- OVERLAY -->
+<div id="overlay">
+  <div class="load-logo">MSA · OBS</div>
+  <div class="load-txt">loading telemetry...</div>
+</div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-mark">MSA<br>Dashboard</div>
+    <div class="sb-logo-sub" id="sb-ts">—</div>
+  </div>
+
+  <div class="sb-section-label">Overview</div>
+  <a class="sb-link active" data-target="s-overview" onclick="navClick(this)">
+    <span class="sb-icon">◈</span> Bottleneck Overview
+  </a>
+  <a class="sb-link" data-target="s-critical" onclick="navClick(this)">
+    <span class="sb-icon">⬡</span> Critical Paths
+  </a>
+
+  <div class="sb-section-label">Service Level</div>
+  <a class="sb-link" data-target="s-svc-metrics" onclick="navClick(this)">
+    <span class="sb-icon">◎</span> Service Metrics
+  </a>
+  <a class="sb-link" data-target="s-coupling" onclick="navClick(this)">
+    <span class="sb-icon">⟡</span> Coupling & Cohesion
+  </a>
+  <a class="sb-link" data-target="s-svc-timeseries" onclick="navClick(this)">
+    <span class="sb-icon">⌇</span> Time Series
+  </a>
+  <a class="sb-link" data-target="s-svc-graph" onclick="navClick(this)">
+    <span class="sb-icon">◬</span> Service Graph
+  </a>
+
+  <div class="sb-section-label">Endpoint Level</div>
+  <a class="sb-link" data-target="s-ep-metrics" onclick="navClick(this)">
+    <span class="sb-icon">◧</span> Endpoint Metrics
+  </a>
+  <a class="sb-link" data-target="s-slo" onclick="navClick(this)">
+    <span class="sb-icon">◉</span> SLO Compliance
+  </a>
+  <a class="sb-link" data-target="s-ep-graph" onclick="navClick(this)">
+    <span class="sb-icon">◭</span> Endpoint Graph
+  </a>
+
+  <div class="sb-section-label">Resources</div>
+  <a class="sb-link" data-target="s-prom" onclick="navClick(this)">
+    <span class="sb-icon">▦</span> Prometheus
+  </a>
+  <a class="sb-link" data-target="s-spans" onclick="navClick(this)">
+    <span class="sb-icon">◪</span> Span Analysis
+  </a>
+
+  <div class="sb-footer">
+    <span class="dot"></span> live data
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="main">
+
+  <div class="page-header">
+    <span class="page-title">Microservice Observability</span>
+    <span class="page-meta" id="page-ts">—</span>
+  </div>
+
+  <!-- ═══ BOTTLENECK OVERVIEW ═══ -->
+  <section class="section" id="s-overview">
+    <div class="sec-hdr">
+      <span class="sec-title">Bottleneck Overview</span>
+      <span class="sec-badge" id="ov-sub">—</span>
+    </div>
+
+    <div class="kpi-row kpi-4" id="ov-kpis"></div>
+
+    <div class="grid-2">
+      <div class="chart-panel">
+        <div class="chart-title">Bottleneck Score — Services</div>
+        <div class="chart-body"><svg id="c-bn-svc" height="200" style="width:100%"></svg></div>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-title">Risk Score — Services</div>
+        <div class="chart-body"><svg id="c-risk-svc" height="200" style="width:100%"></svg></div>
+      </div>
+    </div>
+
+    <div class="chart-panel" style="margin-bottom:14px">
+      <div class="chart-title">Bottleneck Score — Top Endpoints</div>
+      <div class="chart-body"><svg id="c-bn-ep" height="220" style="width:100%"></svg></div>
+    </div>
+
+    <div class="sec-hdr" style="margin-top:28px">
+      <span class="sec-title">Top Service Bottlenecks</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Service</th><th>Severity</th>
+          <th class="r">Score</th><th class="r">Adj</th><th class="r">Risk</th>
+          <th class="r">p50 ms</th><th class="r">p99 ms</th><th class="r">Tail×</th>
+          <th class="r">AIS</th><th class="r">Replicas</th>
+          <th>Worst Endpoint</th><th>Flags</th>
+        </tr></thead>
+        <tbody id="t-svc-bn"></tbody>
+      </table>
+    </div>
+
+    <div class="sec-hdr" style="margin-top:28px">
+      <span class="sec-title">Top Endpoint Bottlenecks</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Operation</th><th>Service</th><th>Severity</th>
+          <th class="r">Score</th><th class="r">Risk</th>
+          <th class="r">p50</th><th class="r">p99</th><th class="r">Tail×</th>
+          <th class="r">AIS</th><th class="r">Calls</th>
+          <th class="r">4xx%</th><th class="r">5xx%</th><th class="r">Timeout%</th>
+        </tr></thead>
+        <tbody id="t-ep-bn"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══ CRITICAL PATHS ═══ -->
+  <section class="section" id="s-critical">
+    <div class="sec-hdr">
+      <span class="sec-title">Critical Paths</span>
+      <span class="sec-badge" id="cp-sub">—</span>
+    </div>
+
+    <div class="kpi-row kpi-3" id="cp-kpis"></div>
+
+    <div class="sec-hdr" style="margin-top:20px">
+      <span class="sec-title">Highest-Latency Path</span>
+    </div>
+    <div id="cp-best"></div>
+
+    <div class="sec-hdr" style="margin-top:20px">
+      <span class="sec-title">Most Frequent Paths</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Path</th>
+          <th class="r">Count</th><th class="r">Max ms</th><th class="r">Mean ms</th>
+        </tr></thead>
+        <tbody id="t-cp-paths"></tbody>
+      </table>
+    </div>
+
+    <div class="grid-2">
+      <div class="chart-panel">
+        <div class="chart-title">Endpoint CP Appearance Weight</div>
+        <div class="chart-body"><svg id="c-cp-ep" height="220" style="width:100%"></svg></div>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-title">Service CP Appearance Weight</div>
+        <div class="chart-body"><svg id="c-cp-svc" height="220" style="width:100%"></svg></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SERVICE METRICS ═══ -->
+  <section class="section" id="s-svc-metrics">
+    <div class="sec-hdr">
+      <span class="sec-title">Service Metrics</span>
+      <span class="sec-badge" id="svc-sub">—</span>
+    </div>
+
+    <div class="grid-2">
+      <div class="chart-panel">
+        <div class="chart-title">p50 / p99 Latency (ms)</div>
+        <div class="chart-body"><svg id="c-lat-svc" height="220" style="width:100%"></svg></div>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-title">Request Rate (req/s)</div>
+        <div class="chart-body"><svg id="c-rps-svc" height="220" style="width:100%"></svg></div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Service</th>
+          <th class="r">Endpoints</th><th class="r">Replicas</th>
+          <th class="r">p50 ms</th><th class="r">p95 ms</th><th class="r">p99 ms</th>
+          <th class="r">Tail×</th><th class="r">Calls</th>
+          <th class="r">Err%</th><th class="r">4xx%</th><th class="r">5xx%</th>
+          <th class="r">Req/s</th><th class="r">CPU</th><th class="r">Mem MB</th>
+          <th class="r">SLO 500ms</th>
+        </tr></thead>
+        <tbody id="t-svc-full"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══ COUPLING & COHESION ═══ -->
+  <section class="section" id="s-coupling">
+    <div class="sec-hdr">
+      <span class="sec-title">Coupling & Cohesion</span>
+    </div>
+
+    <div class="grid-3">
+      <div class="chart-panel">
+        <div class="chart-title">AIS — Afferent Coupling (fan-in)</div>
+        <div class="chart-body"><svg id="c-ais" height="200" style="width:100%"></svg></div>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-title">ADS — Efferent Coupling (fan-out)</div>
+        <div class="chart-body"><svg id="c-ads" height="200" style="width:100%"></svg></div>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-title">TSIC — Total Interface Cohesion</div>
+        <div class="chart-body"><svg id="c-tsic" height="200" style="width:100%"></svg></div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Service</th>
+          <th class="r">AIS</th><th class="r">ADS</th><th class="r">ACS</th>
+          <th class="r">SIUC</th><th class="r">TSIC</th>
+          <th class="r">Endpoints</th><th>SIDC Note</th>
+        </tr></thead>
+        <tbody id="t-cohesion"></tbody>
+      </table>
+    </div>
+
+    <div class="chart-panel" style="margin-bottom:14px">
+      <div class="chart-title">Zipkin Call Edges — Parent → Child (call count)</div>
+      <div class="chart-body" style="padding:14px">
+        <div class="tbl-wrap" style="margin-bottom:0;border:none">
+          <table>
+            <thead><tr>
+              <th>Caller</th><th>Callee</th>
+              <th class="r">Zipkin Count</th><th class="r">Prom Req/s</th>
+            </tr></thead>
+            <tbody id="t-edges"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TIME SERIES ═══ -->
+  <section class="section" id="s-svc-timeseries">
+    <div class="sec-hdr">
+      <span class="sec-title">Service Time Series</span>
+      <span class="sec-badge">Prometheus rolling window</span>
+    </div>
+    <div id="ts-panels"></div>
+  </section>
+
+  <!-- ═══ SERVICE GRAPH ═══ -->
+  <section class="section" id="s-svc-graph">
+    <div class="sec-hdr">
+      <span class="sec-title">Service Dependency Graph</span>
+      <span class="sec-badge">node size = AIS · color = bottleneck score · drag to rearrange</span>
+    </div>
+    <svg id="g-svc" class="graph-canvas" height="520"></svg>
+  </section>
+
+  <!-- ═══ ENDPOINT METRICS ═══ -->
+  <section class="section" id="s-ep-metrics">
+    <div class="sec-hdr">
+      <span class="sec-title">Endpoint Metrics</span>
+      <span class="sec-badge" id="ep-sub">—</span>
+    </div>
+
+    <div class="chart-panel" style="margin-bottom:14px">
+      <div class="chart-title">Throughput vs p99 Latency — Scatter</div>
+      <div class="chart-body"><svg id="c-scatter" height="260" style="width:100%"></svg></div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Operation</th><th>Service</th><th>Proto</th>
+          <th class="r">Calls</th><th class="r">Req/s</th>
+          <th class="r">p50</th><th class="r">p99</th><th class="r">Tail×</th>
+          <th class="r">AIS</th><th class="r">Fan-out</th>
+          <th class="r">Err%</th><th class="r">CP Wt</th>
+          <th class="r">Score</th>
+        </tr></thead>
+        <tbody id="t-ep-full"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══ SLO ═══ -->
+  <section class="section" id="s-slo">
+    <div class="sec-hdr">
+      <span class="sec-title">SLO Compliance</span>
+      <span class="sec-badge">Targets: 200 ms · 500 ms</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Operation</th><th>Service</th>
+          <th class="r">SLO 200ms</th><th style="width:100px"></th>
+          <th class="r">SLO 500ms</th><th style="width:100px"></th>
+          <th class="r">p50 ms</th><th class="r">p99 ms</th>
+        </tr></thead>
+        <tbody id="t-slo"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══ ENDPOINT GRAPH ═══ -->
+  <section class="section" id="s-ep-graph">
+    <div class="sec-hdr">
+      <span class="sec-title">Endpoint Dependency Graph</span>
+      <span class="sec-badge">top 50 endpoints by call count · drag to rearrange</span>
+    </div>
+    <svg id="g-ep" class="graph-canvas" height="580"></svg>
+  </section>
+
+  <!-- ═══ PROMETHEUS ═══ -->
+  <section class="section" id="s-prom">
+    <div class="sec-hdr">
+      <span class="sec-title">Prometheus — Resource Usage</span>
+    </div>
+
+    <div class="grid-2">
+      <div class="chart-panel">
+        <div class="chart-title">CPU Cores per Service</div>
+        <div class="chart-body"><svg id="c-cpu" height="200" style="width:100%"></svg></div>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-title">Memory MB per Service</div>
+        <div class="chart-body"><svg id="c-mem" height="200" style="width:100%"></svg></div>
+      </div>
+    </div>
+
+    <div class="chart-panel" style="margin-bottom:14px">
+      <div class="chart-title">CPU vs Request Rate — Correlation Scatter</div>
+      <div class="chart-body"><svg id="c-cpu-rps" height="260" style="width:100%"></svg></div>
+    </div>
+  </section>
+
+  <!-- ═══ SPANS ═══ -->
+  <section class="section" id="s-spans">
+    <div class="sec-hdr">
+      <span class="sec-title">Span Analysis</span>
+      <span class="sec-badge" id="span-sub">—</span>
+    </div>
+
+    <div class="kpi-row kpi-4" id="span-kpis"></div>
+
+    <div class="grid-2">
+      <div class="chart-panel">
+        <div class="chart-title">Error Type Distribution</div>
+        <div class="chart-body"><svg id="c-err-type" height="200" style="width:100%"></svg></div>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-title">Services by Error Count</div>
+        <div class="chart-body"><svg id="c-svc-err" height="200" style="width:100%"></svg></div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Service</th><th>Operation</th>
+          <th class="r">Calls</th><th class="r">Errors</th><th class="r">Err%</th>
+          <th class="r">4xx</th><th class="r">5xx</th><th class="r">gRPC Err</th><th class="r">Timeout</th>
+          <th class="r">p50 ms</th><th class="r">p99 ms</th>
+        </tr></thead>
+        <tbody id="t-spans-agg"></tbody>
+      </table>
+    </div>
+  </section>
+
+</div><!-- /main -->
+
+<script>
+/* ════════════════════════════════════════════════════════════ UTILS */
+const $ = id => document.getElementById(id);
+const R = v => v == null ? '—' : (+v).toFixed(2);
+const R1 = v => v == null ? '—' : (+v).toFixed(1);
+const R0 = v => v == null ? '—' : Math.round(+v).toLocaleString();
+const R4 = v => v == null ? '—' : (+v).toFixed(4);
+const Pct = v => v == null ? '—' : ((+v)*100).toFixed(2)+'%';
+const P1 = v => v == null ? '—' : ((+v)*100).toFixed(1)+'%';
+const shortSvc = s => (s||'').replace('.default','');
+
+function badge(sev) {
+  const s = (sev||'low').toLowerCase();
+  return `<span class="badge b-${s}">${s}</span>`;
+}
+
+function sloBar(v) {
+  const pct = Math.min(100, Math.max(0, (v||0)*100));
+  const col = pct >= 99 ? '#3fb950' : pct >= 90 ? '#d29922' : '#f85149';
+  return `<div class="slo-bar"><div class="slo-fill" style="width:${pct.toFixed(1)}%;background:${col}"></div></div>`;
+}
+
+/* ════════════════════════════════════════════════════════════ D3 HELPERS */
+const C = {
+  bg:'#0d1117', bg2:'#141a22', bg3:'#1a2130',
+  line:'#1c2333', line2:'#243044',
+  text:'#b8c4d4', text2:'#5c6e85', text3:'#2e3d52',
+  hi:'#58a6ff', gr:'#3fb950', ye:'#d29922', re:'#f85149',
+  pu:'#bc8cff', cy:'#39d0d8', or:'#f0883e'
+};
+
+function hbar(svgId, data, {keyFn, valFn, color=C.hi, max=12, fmtFn=R, label=''}={}) {
+  const el = $(svgId); if (!el || !data?.length) return;
+  const items = data.slice(0,max);
+  const W = el.closest('.chart-body')?.clientWidth || el.parentElement?.clientWidth || 600;
+  const BH = 17, GAP = 5, PL = 145, PR = 55, PT = 6, PB = 6;
+  const H = items.length * (BH+GAP) + PT + PB;
+  el.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  el.setAttribute('height', H);
+  const maxV = d3.max(items, valFn) || 1;
+  const xsc = d3.scaleLinear().domain([0, maxV]).range([0, W-PL-PR]);
+  const svg = d3.select(el); svg.selectAll('*').remove();
+
+  items.forEach((d,i) => {
+    const y = PT + i*(BH+GAP);
+    const bw = xsc(valFn(d));
+    const g = svg.append('g');
+    g.append('text').attr('x',PL-6).attr('y',y+BH/2+4).attr('text-anchor','end')
+      .attr('font-size',10).attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
+      .text((keyFn(d)||'').slice(0,20));
+    g.append('rect').attr('x',PL).attr('y',y).attr('width',W-PL-PR).attr('height',BH)
+      .attr('fill',C.bg3).attr('rx',2);
+    g.append('rect').attr('x',PL).attr('y',y).attr('width',Math.max(bw,2)).attr('height',BH)
+      .attr('fill',color).attr('rx',2).attr('opacity',.8);
+    g.append('text').attr('x',PL+bw+5).attr('y',y+BH/2+4)
+      .attr('font-size',10).attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
+      .text(fmtFn(valFn(d)));
+  });
+}
+
+function dualHbar(svgId, data, {keyFn, val1Fn, val2Fn, color1=C.ye, color2=C.hi, max=12}={}) {
+  const el = $(svgId); if (!el || !data?.length) return;
+  const items = data.slice(0,max);
+  const W = el.closest('.chart-body')?.clientWidth || 600;
+  const BH = 7, GAP = 12, PL = 145, PR = 55, PT = 6, PB = 6;
+  const H = items.length * (BH*2+GAP+2) + PT + PB;
+  el.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  el.setAttribute('height', H);
+  const maxV = Math.max(d3.max(items, val1Fn)||1, d3.max(items, val2Fn)||1);
+  const xsc = d3.scaleLinear().domain([0, maxV]).range([0, W-PL-PR]);
+  const svg = d3.select(el); svg.selectAll('*').remove();
+
+  items.forEach((d,i) => {
+    const y = PT + i*(BH*2+GAP+2);
+    const g = svg.append('g');
+    g.append('text').attr('x',PL-6).attr('y',y+BH*2/2+8).attr('text-anchor','end')
+      .attr('font-size',10).attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
+      .text((keyFn(d)||'').slice(0,20));
+    // p50
+    const w1 = xsc(val1Fn(d));
+    g.append('rect').attr('x',PL).attr('y',y).attr('width',W-PL-PR).attr('height',BH)
+      .attr('fill',C.bg3).attr('rx',1);
+    g.append('rect').attr('x',PL).attr('y',y).attr('width',Math.max(w1,1)).attr('height',BH)
+      .attr('fill',color1).attr('rx',1).attr('opacity',.8);
+    // p99
+    const w2 = xsc(val2Fn(d));
+    g.append('rect').attr('x',PL).attr('y',y+BH+2).attr('width',W-PL-PR).attr('height',BH)
+      .attr('fill',C.bg3).attr('rx',1);
+    g.append('rect').attr('x',PL).attr('y',y+BH+2).attr('width',Math.max(w2,1)).attr('height',BH)
+      .attr('fill',color2).attr('rx',1).attr('opacity',.8);
+    // val label
+    g.append('text').attr('x',PL+Math.max(w2,w1)+5).attr('y',y+BH*2/2+8)
+      .attr('font-size',9).attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
+      .text(R1(val2Fn(d))+'ms');
+  });
+}
+
+function scatter(svgId, data, {xKey, yKey, labelKey, xLabel='req/s', yLabel='p99 ms'}={}) {
+  const el = $(svgId); if (!el || !data?.length) return;
+  const W = el.closest('.chart-body')?.clientWidth || 600;
+  const H = +el.getAttribute('height') || 260;
+  const pad = {t:20, r:20, b:40, l:70};
+  el.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const xs = d3.scaleLinear().domain([0, d3.max(data,d=>d[xKey])||1]).range([pad.l,W-pad.r]).nice();
+  const ys = d3.scaleLinear().domain([0, d3.max(data,d=>d[yKey])||1]).range([H-pad.b,pad.t]).nice();
+  const svg = d3.select(el); svg.selectAll('*').remove();
+
+  ys.ticks(5).forEach(t => {
+    svg.append('line').attr('x1',pad.l).attr('x2',W-pad.r).attr('y1',ys(t)).attr('y2',ys(t))
+      .attr('stroke',C.line2).attr('stroke-width',.5);
+    svg.append('text').attr('x',pad.l-5).attr('y',ys(t)+4).attr('text-anchor','end')
+      .attr('font-size',9).attr('fill',C.text3).attr('font-family','JetBrains Mono,monospace')
+      .text(R1(t));
+  });
+  xs.ticks(5).forEach(t => {
+    svg.append('line').attr('x1',xs(t)).attr('x2',xs(t)).attr('y1',pad.t).attr('y2',H-pad.b)
+      .attr('stroke',C.line2).attr('stroke-width',.5);
+    svg.append('text').attr('x',xs(t)).attr('y',H-pad.b+14).attr('text-anchor','middle')
+      .attr('font-size',9).attr('fill',C.text3).attr('font-family','JetBrains Mono,monospace')
+      .text(R1(t));
+  });
+  svg.append('text').attr('x',W/2).attr('y',H-4).attr('text-anchor','middle')
+    .attr('font-size',9).attr('fill',C.text3).attr('font-family','JetBrains Mono,monospace').text(xLabel);
+  svg.append('text').attr('transform',`translate(12,${H/2})rotate(-90)`)
+    .attr('text-anchor','middle').attr('font-size',9).attr('fill',C.text3)
+    .attr('font-family','JetBrains Mono,monospace').text(yLabel);
+
+  data.forEach(d => {
+    const cx = xs(d[xKey]||0), cy = ys(d[yKey]||0);
+    svg.append('circle').attr('cx',cx).attr('cy',cy).attr('r',5)
+      .attr('fill',C.hi).attr('opacity',.7).attr('stroke',C.hi2).attr('stroke-width',1);
+    if (d[labelKey]) {
+      svg.append('text').attr('x',cx+7).attr('y',cy+4).attr('font-size',8)
+        .attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
+        .text((d[labelKey]||'').slice(0,18));
+    }
+  });
+}
+
+function sparkline(data, {width=80, height=24, color=C.hi}={}) {
+  if (!data?.length) return '';
+  const vals = data.map(d=>d.value||0);
+  const mn = Math.min(...vals), mx = Math.max(...vals);
+  const range = mx - mn || 1;
+  const xsc = i => (i/(vals.length-1))*(width-2)+1;
+  const ysc = v => height - 2 - ((v-mn)/range)*(height-4);
+  const pts = vals.map((v,i)=>`${xsc(i)},${ysc(v)}`).join(' ');
+  return `<svg class="sparkline-svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.2" opacity=".85"/>
+  </svg>`;
+}
+
+function tsLine(svgId, series, {colors=null, labels=null}={}) {
+  const el = $(svgId); if (!el || !series?.length) return;
+  const W = el.parentElement?.clientWidth || 400;
+  const H = 90;
+  const pad = {t:8, r:16, b:22, l:48};
+  el.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  el.setAttribute('height', H);
+  const allTs = series.flatMap(s=>(s||[]).map(d=>d.ts));
+  const allVals = series.flatMap(s=>(s||[]).map(d=>d.value));
+  if (!allTs.length) return;
+  const xs = d3.scaleLinear().domain([Math.min(...allTs), Math.max(...allTs)]).range([pad.l, W-pad.r]);
+  const ys = d3.scaleLinear().domain([0, Math.max(...allVals)||1]).range([H-pad.b, pad.t]).nice();
+  const svg = d3.select(el); svg.selectAll('*').remove();
+
+  ys.ticks(3).forEach(t => {
+    svg.append('line').attr('x1',pad.l).attr('x2',W-pad.r).attr('y1',ys(t)).attr('y2',ys(t))
+      .attr('stroke',C.line).attr('stroke-width',.5);
+    svg.append('text').attr('x',pad.l-4).attr('y',ys(t)+4).attr('text-anchor','end')
+      .attr('font-size',8).attr('fill',C.text3).attr('font-family','JetBrains Mono,monospace')
+      .text(R1(t));
+  });
+
+  const defColors = [C.hi, C.gr, C.ye, C.re, C.pu, C.cy, C.or];
+  series.forEach((s, si) => {
+    if (!s?.length) return;
+    const col = (colors||defColors)[si % defColors.length];
+    const line = d3.line().x(d=>xs(d.ts)).y(d=>ys(d.value)).curve(d3.curveMonotoneX);
+    svg.append('path').datum(s).attr('d', line).attr('fill','none')
+      .attr('stroke', col).attr('stroke-width',1.5).attr('opacity',.85);
+  });
+}
+
+function forceGraph(svgId, nodes, links, {sizeKey='ais', colorFn=null, labelKey='service', height=520}={}) {
+  const el = $(svgId); if (!el || !nodes?.length) return;
+  const W = el.parentElement?.clientWidth || 900;
+  const H = height;
+  el.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+  const rsc = d3.scaleSqrt().domain([0, d3.max(nodes, d=>d[sizeKey]||0)||1]).range([5,24]);
+  const svg = d3.select(el); svg.selectAll('*').remove();
+
+  // defs
+  svg.append('defs').append('marker').attr('id','arr'+svgId)
+    .attr('viewBox','0 -3 6 6').attr('refX',6).attr('refY',0)
+    .attr('markerWidth',5).attr('markerHeight',5).attr('orient','auto')
+    .append('path').attr('d','M0,-3L6,0L0,3').attr('fill',C.line2);
+
+  const link = svg.append('g').selectAll('line').data(links).join('line')
+    .attr('stroke',C.line2).attr('stroke-width',1.2)
+    .attr('marker-end',`url(#arr${svgId})`);
+
+  const node = svg.append('g').selectAll('g').data(nodes).join('g')
+    .style('cursor','pointer')
+    .call(d3.drag()
+      .on('start',(e,d)=>{ if(!e.active) sim.alphaTarget(.3).restart(); d.fx=d.x; d.fy=d.y; })
+      .on('drag',(e,d)=>{ d.fx=e.x; d.fy=e.y; })
+      .on('end',(e,d)=>{ if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }));
+
+  node.append('circle')
+    .attr('r', d=>rsc(d[sizeKey]||0))
+    .attr('fill', d=>colorFn ? colorFn(d) : C.hi).attr('fill-opacity',.2)
+    .attr('stroke', d=>colorFn ? colorFn(d) : C.hi).attr('stroke-width',1.5);
+
+  node.append('text').attr('dy', d=>rsc(d[sizeKey]||0)+11)
+    .attr('text-anchor','middle').attr('font-size',9)
+    .attr('fill',C.text2).attr('font-family','JetBrains Mono,monospace')
+    .text(d=>(d[labelKey]||'').replace('.default','').slice(0,20));
+
+  const sim = d3.forceSimulation(nodes)
+    .force('link',d3.forceLink(links).id(d=>d.id||d.service).distance(90).strength(.5))
+    .force('charge',d3.forceManyBody().strength(-200))
+    .force('center',d3.forceCenter(W/2,H/2))
+    .force('collision',d3.forceCollide().radius(d=>rsc(d[sizeKey]||0)+12));
+
+  sim.on('tick',()=>{
+    link.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y)
+        .attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
+    node.attr('transform',d=>`translate(${d.x},${d.y})`);
+  });
+}
+
+/* ════════════════════════════════════════════════════════════ RENDER SECTIONS */
+
+function renderOverview(bn) {
+  if (!bn) return;
+  const all = bn.all_service_scores || [];
+  const svcBn = bn.service_bottlenecks || [];
+  const epBn  = bn.endpoint_bottlenecks || [];
+
+  const high   = all.filter(s=>s.severity==='high').length;
+  const med    = all.filter(s=>s.severity==='medium').length;
+  const low    = all.filter(s=>s.severity==='low').length;
+  const maxScore = Math.max(...all.map(s=>s.bottleneck_score), 0);
+  const maxRisk  = Math.max(...all.map(s=>s.risk_score), 0);
+
+  $('ov-sub').textContent = `${all.length} services · ${epBn.length} top endpoints`;
+  $('ov-kpis').innerHTML = `
+    <div class="kpi re"><div class="kpi-label">High Severity</div>
+      <div class="kpi-val re">${high}</div><div class="kpi-sub">services</div></div>
+    <div class="kpi ye"><div class="kpi-label">Medium Severity</div>
+      <div class="kpi-val ye">${med}</div><div class="kpi-sub">services</div></div>
+    <div class="kpi gr"><div class="kpi-label">Low Severity</div>
+      <div class="kpi-val gr">${low}</div><div class="kpi-sub">services</div></div>
+    <div class="kpi hi"><div class="kpi-label">Max Score</div>
+      <div class="kpi-val hi">${R(maxScore)}</div><div class="kpi-sub">bottleneck</div></div>
+  `;
+
+  hbar('c-bn-svc', all, {
+    keyFn: d=>shortSvc(d.service), valFn: d=>d.bottleneck_score||0,
+    color: C.hi, max:12, fmtFn: R
+  });
+  hbar('c-risk-svc', all, {
+    keyFn: d=>shortSvc(d.service), valFn: d=>d.risk_score||0,
+    color: C.re, max:12, fmtFn: R4
+  });
+  hbar('c-bn-ep', epBn, {
+    keyFn: d=>(d.operation||'').split('/').pop().slice(0,28),
+    valFn: d=>d.bottleneck_score||0,
+    color: C.pu, max:10, fmtFn: R
+  });
+
+  // service bottleneck table
+  const tb1 = $('t-svc-bn'); tb1.innerHTML='';
+  svcBn.forEach(b => {
+    const reasons = (b.reasons||[]).map(r=>`<div class="reason">${r}</div>`).join('');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="mono">${shortSvc(b.service)}</td>
+      <td>${badge(b.severity)}</td>
+      <td class="r">${R(b.bottleneck_score)}</td>
+      <td class="r dim">${R(b.bottleneck_score_adj)}</td>
+      <td class="r">${R4(b.risk_score)}</td>
+      <td class="r">${R1(b.latency?.p50_ms)}</td>
+      <td class="r">${R1(b.latency?.p99_ms)}</td>
+      <td class="r">${R(b.tail_ratio)}</td>
+      <td class="r">${b.coupling?.ais||0}</td>
+      <td class="r">${b.replica_count||1}</td>
+      <td class="trunc dim">${b.worst_endpoint||'—'}</td>
+      <td><div class="reasons">${reasons}</div></td>
+    `;
+    tb1.appendChild(tr);
+  });
+
+  // endpoint bottleneck table
+  const tb2 = $('t-ep-bn'); tb2.innerHTML='';
+  epBn.forEach(b => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="trunc mono">${b.operation||'—'}</td>
+      <td class="dim">${shortSvc(b.service)}</td>
+      <td>${badge(b.severity)}</td>
+      <td class="r">${R(b.bottleneck_score)}</td>
+      <td class="r">${R4(b.risk_score)}</td>
+      <td class="r">${R1(b.latency?.p50_ms)}</td>
+      <td class="r">${R1(b.latency?.p99_ms)}</td>
+      <td class="r">${R(b.tail_ratio)}</td>
+      <td class="r">${b.coupling?.ais||0}</td>
+      <td class="r">${R0(b.call_count)}</td>
+      <td class="r">${Pct(b.errors?.rate_4xx)}</td>
+      <td class="r">${Pct(b.errors?.rate_5xx)}</td>
+      <td class="r">${Pct(b.errors?.rate_timeout)}</td>
+    `;
+    tb2.appendChild(tr);
+  });
+}
+
+function renderCriticalPaths(cp) {
+  if (!cp) return;
+  const byPath = (cp.by_path||[]).sort((a,b)=>b.count-a.count);
+  const byEp   = cp.by_endpoint || [];
+  const bySvc  = cp.by_service  || [];
+  const total  = cp.total_traces || 0;
+  const skip   = cp.total_skipped || 0;
+
+  $('cp-sub').textContent = `${total} traces · ${skip} skipped`;
+  $('cp-kpis').innerHTML = `
+    <div class="kpi hi"><div class="kpi-label">Valid Traces</div>
+      <div class="kpi-val">${R0(total)}</div></div>
+    <div class="kpi"><div class="kpi-label">Unique Paths</div>
+      <div class="kpi-val">${byPath.length}</div></div>
+    <div class="kpi"><div class="kpi-label">Skipped</div>
+      <div class="kpi-val dim">${R0(skip)}</div></div>
+  `;
+
+  // best (highest latency) path
+  if (byPath.length) {
+    const best = [...byPath].sort((a,b)=>b.latency_ms_max-a.latency_ms_max)[0];
+    const nodes = (best.path||[]).map(p => {
+      const svc = p.split('::')[0];
+      return `<span class="cp-node">${shortSvc(svc)}</span>`;
+    }).join('<span class="cp-arrow"> → </span>');
+    $('cp-best').innerHTML = `<div class="cp-flow">${nodes}
+      <span class="cp-stat">${R1(best.latency_ms_max)} ms p99</span></div>`;
+  }
+
+  // path table
+  const tbl = $('t-cp-paths'); tbl.innerHTML='';
+  byPath.slice(0,20).forEach(p => {
+    const pathStr = (p.path||[]).map(x=>shortSvc(x.split('::')[0])).join(' → ');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="ltrunc mono dim">${pathStr}</td>
+      <td class="r">${p.count||0}</td>
+      <td class="r">${R1(p.latency_ms_max)}</td>
+      <td class="r">${R1(p.latency_ms_mean)}</td>
+    `;
+    tbl.appendChild(tr);
+  });
+
+  hbar('c-cp-ep', byEp.slice(0,15), {
+    keyFn: d=>`${shortSvc(d.service||'')}:${(d.operation||'').split('/').pop().slice(0,16)}`,
+    valFn: d=>d.appearance_weight||0,
+    color: C.pu, fmtFn: R4
+  });
+  hbar('c-cp-svc', bySvc.slice(0,12), {
+    keyFn: d=>shortSvc(d.service||''),
+    valFn: d=>d.appearance_weight||0,
+    color: C.cy, fmtFn: R4
+  });
+}
+
+function renderServiceMetrics(svcM) {
+  if (!svcM?.length) return;
+  $('svc-sub').textContent = `${svcM.length} services`;
+
+  dualHbar('c-lat-svc', svcM, {
+    keyFn: d=>shortSvc(d.service),
+    val1Fn: d=>d.latency?.p50_ms||0,
+    val2Fn: d=>d.latency?.p99_ms||0,
+    color1: C.ye, color2: C.re
+  });
+
+  const withProm = svcM.filter(m=>m.prometheus?.request_rate>0);
+  hbar('c-rps-svc', withProm.length ? withProm : svcM, {
+    keyFn: d=>shortSvc(d.service),
+    valFn: d=>d.prometheus?.request_rate||0,
+    color: C.gr, fmtFn: v=>R(v)+'/s'
+  });
+
+  const tbl = $('t-svc-full'); tbl.innerHTML='';
+  svcM.forEach(m => {
+    const p = m.prometheus||{};
+    const errs = m.errors||{};
+    const slo = m.slo?.slo_500ms;
+    const sloColor = (slo>=.99) ? C.gr : (slo>=.9) ? C.ye : C.re;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="mono">${shortSvc(m.service)}</td>
+      <td class="r">${m.num_endpoints||0}</td>
+      <td class="r">${m.replica_count||1}</td>
+      <td class="r">${R1(m.latency?.p50_ms)}</td>
+      <td class="r">${R1(m.latency?.p95_ms)}</td>
+      <td class="r">${R1(m.latency?.p99_ms)}</td>
+      <td class="r">${R(m.tail_ratio)}</td>
+      <td class="r">${R0(m.call_count)}</td>
+      <td class="r">${P1(errs.rate)}</td>
+      <td class="r dim">${P1(errs.rate_4xx)}</td>
+      <td class="r dim">${P1(errs.rate_5xx)}</td>
+      <td class="r">${R(p.request_rate)}</td>
+      <td class="r">${(p.cpu_cores||0).toFixed(4)}</td>
+      <td class="r">${R1(p.memory_mb)}</td>
+      <td class="r" style="color:${sloColor}">${slo!=null?P1(slo):'—'}</td>
+    `;
+    tbl.appendChild(tr);
+  });
+}
+
+function renderCoupling(svcM) {
+  if (!svcM?.length) return;
+  const sorted = [...svcM].sort((a,b)=>(b.coupling?.ais||0)-(a.coupling?.ais||0));
+
+  hbar('c-ais', sorted, {
+    keyFn: d=>shortSvc(d.service), valFn: d=>d.coupling?.ais||0,
+    color: C.re, max:12, fmtFn: v=>Math.round(v)
+  });
+  hbar('c-ads', sorted, {
+    keyFn: d=>shortSvc(d.service), valFn: d=>d.coupling?.ads||0,
+    color: C.or, max:12, fmtFn: v=>Math.round(v)
+  });
+  hbar('c-tsic', [...svcM].sort((a,b)=>(b.cohesion?.tsic||0)-(a.cohesion?.tsic||0)), {
+    keyFn: d=>shortSvc(d.service), valFn: d=>d.cohesion?.tsic||0,
+    color: C.gr, max:12, fmtFn: R4
+  });
+
+  const tbl = $('t-cohesion'); tbl.innerHTML='';
+  svcM.forEach(m => {
+    const c=m.coupling||{}, co=m.cohesion||{};
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="mono">${shortSvc(m.service)}</td>
+      <td class="r">${c.ais||0}</td>
+      <td class="r">${c.ads||0}</td>
+      <td class="r">${R(c.acs)}</td>
+      <td class="r">${R4(co.siuc)}</td>
+      <td class="r">${R4(co.tsic)}</td>
+      <td class="r">${co.num_endpoints||0}</td>
+      <td class="dim" style="font-size:9px">${co.sidc_note||'—'}</td>
+    `;
+    tbl.appendChild(tr);
+  });
+}
+
+function renderEdges(svcM, prom) {
+  const promEdges = prom?.edges || [];
+  const zipkinEdgeMap = {};
+  (svcM||[]).forEach(m=>{
+    (m.zipkin_edges||[]).forEach(e=>{
+      if (e.direction==='incoming') {
+        const key = `${shortSvc(e.parent)}→${shortSvc(m.service)}`;
+        zipkinEdgeMap[key] = (zipkinEdgeMap[key]||0) + (e.callCount||0);
+      }
+    });
+  });
+
+  const tbl = $('t-edges'); tbl.innerHTML='';
+  promEdges.forEach(e => {
+    const key = `${e.source}→${e.destination}`;
+    const zc = zipkinEdgeMap[key] || '—';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="mono">${e.source}</td>
+      <td class="mono">${e.destination}</td>
+      <td class="r"><span class="rate-pill">${R(e.request_rate)}</span></td>
+      <td class="r dim">${typeof zc === 'number' ? R0(zc) : zc}</td>
+    `;
+    tbl.appendChild(tr);
+  });
+}
+
+function renderTimeSeries(svcM) {
+  if (!svcM?.length) return;
+  const container = $('ts-panels');
+  container.innerHTML = '';
+
+  const servicesWithTS = svcM.filter(m => {
+    const ts = m.time_series;
+    return ts && (ts.request_rate_ts?.length || ts.p99_latency_ts?.length || ts.cpu_usage_ts?.length);
+  });
+
+  if (!servicesWithTS.length) {
+    container.innerHTML = '<div class="err-box">No time series data available.</div>';
+    return;
+  }
+
+  const grid = document.createElement('div');
+  grid.className = 'grid-2';
+
+  servicesWithTS.forEach(m => {
+    const ts = m.time_series;
+    const panel = document.createElement('div');
+    panel.className = 'chart-panel';
+
+    const rts = ts.request_rate_ts || [];
+    const p99 = ts.p99_latency_ts || [];
+    const cpu = ts.cpu_usage_ts || [];
+
+    panel.innerHTML = `
+      <div class="chart-title">${shortSvc(m.service)}</div>
+      <div class="chart-body" style="padding:10px 14px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">
+          <div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:.1em;margin-bottom:3px">REQ/S</div>
+            <svg id="ts-rps-${m.service}" style="width:100%;height:60px"></svg>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:.1em;margin-bottom:3px">P99 MS</div>
+            <svg id="ts-p99-${m.service}" style="width:100%;height:60px"></svg>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--text3);letter-spacing:.1em;margin-bottom:3px">CPU</div>
+            <svg id="ts-cpu-${m.service}" style="width:100%;height:60px"></svg>
+          </div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(panel);
+
+    // defer to after DOM insert
+    setTimeout(() => {
+      tsLine(`ts-rps-${m.service}`, [rts], {colors:[C.gr]});
+      tsLine(`ts-p99-${m.service}`, [p99], {colors:[C.ye]});
+      tsLine(`ts-cpu-${m.service}`, [cpu], {colors:[C.re]});
+    }, 0);
+  });
+
+  container.appendChild(grid);
+}
+
+function renderServiceGraph(gSvc, svcM) {
+  if (!gSvc?.nodes) return;
+  const scoreMap = {};
+  (svcM||[]).forEach(m=>{ scoreMap[m.service] = m.bottleneck_score||0; });
+  const maxSc = Math.max(...Object.values(scoreMap), 1);
+
+  const nodes = gSvc.nodes.map(n=>({...n, id:n.service}));
+  const links = gSvc.edges.map(e=>({source:e.caller, target:e.callee, value:e.call_count}));
+
+  const colorFn = d => {
+    const sc = scoreMap[d.service]||0;
+    if (sc >= 50)  return C.re;
+    if (sc >= 10)  return C.ye;
+    if (sc >= 2)   return C.hi;
+    return C.gr;
+  };
+
+  forceGraph('g-svc', nodes, links, {sizeKey:'ais', colorFn, labelKey:'service', height:520});
+}
+
+function renderEndpointMetrics(epM, epAgg) {
+  if (!epM?.length) return;
+  $('ep-sub').textContent = `${epM.length} endpoints`;
+
+  const scData = epM.slice(0,40).map(e=>({
+    x: e.request_rate||0, y: e.latency?.p99_ms||0,
+    label: (e.operation||'').split('/').pop()
+  }));
+  scatter('c-scatter', scData, {xKey:'x', yKey:'y', labelKey:'label', xLabel:'req/s', yLabel:'p99 ms'});
+
+  const tbl = $('t-ep-full'); tbl.innerHTML='';
+  epM.forEach(m => {
+    const errs = m.errors||{};
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="trunc mono">${m.operation||'—'}</td>
+      <td class="dim">${shortSvc(m.service)}</td>
+      <td class="dim">${m.protocol||'—'}</td>
+      <td class="r">${R0(m.call_count)}</td>
+      <td class="r">${R(m.request_rate)}</td>
+      <td class="r">${R1(m.latency?.p50_ms)}</td>
+      <td class="r">${R1(m.latency?.p99_ms)}</td>
+      <td class="r">${R(m.tail_ratio)}</td>
+      <td class="r">${m.coupling?.ais||0}</td>
+      <td class="r">${R(m.fanout_avg)}</td>
+      <td class="r">${Pct(errs.rate)}</td>
+      <td class="r">${R4(m.cp_weight||0)}</td>
+      <td class="r">${R(m.bottleneck_score)}</td>
+    `;
+    tbl.appendChild(tr);
+  });
+}
+
+function renderSLO(epM) {
+  if (!epM?.length) return;
+  const sorted = [...epM].sort((a,b)=>(a.slo?.slo_200ms||0)-(b.slo?.slo_200ms||0));
+  const tbl = $('t-slo'); tbl.innerHTML='';
+  sorted.forEach(m => {
+    const s200 = m.slo?.slo_200ms; const s500 = m.slo?.slo_500ms;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="trunc mono">${m.operation||'—'}</td>
+      <td class="dim">${shortSvc(m.service)}</td>
+      <td class="r">${s200!=null?P1(s200):'—'}</td>
+      <td>${s200!=null?sloBar(s200):''}</td>
+      <td class="r">${s500!=null?P1(s500):'—'}</td>
+      <td>${s500!=null?sloBar(s500):''}</td>
+      <td class="r">${R1(m.latency?.p50_ms)}</td>
+      <td class="r">${R1(m.latency?.p99_ms)}</td>
+    `;
+    tbl.appendChild(tr);
+  });
+}
+
+function renderEndpointGraph(gEp, epM) {
+  if (!gEp?.nodes) return;
+  const scoreMap = {};
+  (epM||[]).forEach(m=>{ scoreMap[m.id] = m.bottleneck_score||0; });
+
+  const top = [...gEp.nodes].sort((a,b)=>b.call_count-a.call_count).slice(0,50);
+  const topIds = new Set(top.map(n=>n.id));
+  const links = gEp.edges.filter(e=>topIds.has(e.caller_id)&&topIds.has(e.callee_id))
+    .map(e=>({source:e.caller_id, target:e.callee_id}));
+
+  const colorFn = d => {
+    const sc = scoreMap[d.id]||0;
+    if (sc>=50) return C.re;
+    if (sc>=10) return C.ye;
+    return C.hi;
+  };
+
+  forceGraph('g-ep', top, links, {sizeKey:'ais', colorFn, labelKey:'operation', height:580});
+}
+
+function renderPrometheus(prom, svcM) {
+  if (!prom) return;
+  const svcs = prom.services || [];
+
+  hbar('c-cpu', svcs, {
+    keyFn: d=>d.service||'', valFn: d=>d.cpu_cores||0,
+    color: C.ye, fmtFn: v=>(+v).toFixed(5)
+  });
+  hbar('c-mem', svcs, {
+    keyFn: d=>d.service||'', valFn: d=>d.memory_mb||0,
+    color: C.pu, fmtFn: R1
+  });
+
+  if (svcM?.length) {
+    const cpuData = svcM.filter(m=>m.cpu_vs_rps?.cpu_cores>0||m.cpu_vs_rps?.request_rate>0)
+      .map(m=>({
+        x: m.cpu_vs_rps?.request_rate||0,
+        y: m.cpu_vs_rps?.cpu_cores||0,
+        label: shortSvc(m.service)
+      }));
+    scatter('c-cpu-rps', cpuData, {xKey:'x', yKey:'y', labelKey:'label', xLabel:'req/s', yLabel:'cpu cores'});
+  }
+}
+
+function renderSpans(spans, epAgg) {
+  const agg = epAgg || [];
+  if (!agg.length && !spans?.length) return;
+
+  if (agg.length) {
+    const total = agg.reduce((s,e)=>s+e.call_count, 0);
+    const errs  = agg.reduce((s,e)=>s+(e.errors?.total||0), 0);
+    const svcs  = new Set(agg.map(e=>e.service)).size;
+    const ops   = agg.length;
+
+    $('span-sub').textContent = `${total.toLocaleString()} calls · ${ops} operations · ${svcs} services`;
+    $('span-kpis').innerHTML = `
+      <div class="kpi hi"><div class="kpi-label">Total Calls</div>
+        <div class="kpi-val">${R0(total)}</div></div>
+      <div class="kpi re"><div class="kpi-label">Total Errors</div>
+        <div class="kpi-val re">${R0(errs)}</div></div>
+      <div class="kpi"><div class="kpi-label">Operations</div>
+        <div class="kpi-val">${ops}</div></div>
+      <div class="kpi"><div class="kpi-label">Services</div>
+        <div class="kpi-val">${svcs}</div></div>
+    `;
+
+    const e4xx = agg.reduce((s,e)=>s+(e.errors?.count_4xx||0),0);
+    const e5xx = agg.reduce((s,e)=>s+(e.errors?.count_5xx||0),0);
+    const egrpc= agg.reduce((s,e)=>s+(e.errors?.count_grpc||0),0);
+    const eto  = agg.reduce((s,e)=>s+(e.errors?.count_timeout||0),0);
+
+    const errTypes = [
+      {label:'4xx',   val:e4xx}, {label:'5xx',    val:e5xx},
+      {label:'gRPC',  val:egrpc},{label:'timeout', val:eto}
+    ].filter(x=>x.val>0);
+    hbar('c-err-type', errTypes.length?errTypes:[{label:'none',val:0}], {
+      keyFn:d=>d.label, valFn:d=>d.val, color:C.re, fmtFn:R0
+    });
+
+    const svcErrs = {};
+    agg.forEach(e=>{ svcErrs[shortSvc(e.service)] = (svcErrs[shortSvc(e.service)]||0)+(e.errors?.total||0); });
+    const svcErrArr = Object.entries(svcErrs).map(([s,v])=>({s,v})).sort((a,b)=>b.v-a.v);
+    hbar('c-svc-err', svcErrArr, {keyFn:d=>d.s, valFn:d=>d.v, color:C.ye, fmtFn:R0});
+
+    const tbl = $('t-spans-agg'); tbl.innerHTML='';
+    [...agg].sort((a,b)=>b.call_count-a.call_count).forEach(e => {
+      const er = e.errors||{};
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="mono">${shortSvc(e.service)}</td>
+        <td class="trunc dim">${e.operation||'—'}</td>
+        <td class="r">${R0(e.call_count)}</td>
+        <td class="r">${R0(er.total)}</td>
+        <td class="r">${Pct(er.rate)}</td>
+        <td class="r dim">${R0(er.count_4xx)}</td>
+        <td class="r dim">${R0(er.count_5xx)}</td>
+        <td class="r dim">${R0(er.count_grpc)}</td>
+        <td class="r dim">${R0(er.count_timeout)}</td>
+        <td class="r">${R1(e.latency?.p50_ms)}</td>
+        <td class="r">${R1(e.latency?.p99_ms)}</td>
+      `;
+      tbl.appendChild(tr);
+    });
+
+  } else if (spans?.length) {
+    // fallback to raw spans
+    $('span-sub').textContent = `${spans.length.toLocaleString()} SERVER spans`;
+    const errs = spans.filter(s=>s.is_error).length;
+    $('span-kpis').innerHTML = `
+      <div class="kpi hi"><div class="kpi-label">Total Spans</div>
+        <div class="kpi-val">${spans.length.toLocaleString()}</div></div>
+      <div class="kpi re"><div class="kpi-label">Error Spans</div>
+        <div class="kpi-val re">${errs}</div>
+        <div class="kpi-sub">${((errs/spans.length)*100).toFixed(1)}%</div></div>
+      <div class="kpi"><div class="kpi-label">—</div><div class="kpi-val">—</div></div>
+      <div class="kpi"><div class="kpi-label">—</div><div class="kpi-val">—</div></div>
+    `;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════ NAV */
+function navClick(el) {
+  event.preventDefault();
+  document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
+  el.classList.add('active');
+  const target = el.dataset.target;
+  document.getElementById(target)?.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// Scroll spy
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      document.querySelectorAll('.sb-link').forEach(l => {
+        l.classList.toggle('active', l.dataset.target === id);
+      });
+    }
+  });
+}, {threshold:.15, rootMargin:'-60px 0px -60% 0px'});
+
+document.querySelectorAll('.section').forEach(s=>observer.observe(s));
+
+/* ════════════════════════════════════════════════════════════ INIT */
+async function init() {
+  try {
+    const res = await fetch('/api/all');
+    const d   = await res.json();
+    const ts  = new Date().toLocaleTimeString();
+    $('sb-ts').textContent = ts;
+    $('page-ts').textContent = `collected ${ts}`;
+
+    renderOverview(d.bottlenecks);
+    renderCriticalPaths(d.critical_paths);
+    renderServiceMetrics(d.metrics_service);
+    renderCoupling(d.metrics_service);
+    renderEdges(d.metrics_service, d.prometheus_processed);
+    renderTimeSeries(d.metrics_service);
+    renderServiceGraph(d.graph_service, d.metrics_service);
+    renderEndpointMetrics(d.metrics_endpoint, d.endpoint_aggregates);
+    renderSLO(d.metrics_endpoint);
+    renderEndpointGraph(d.graph_endpoint, d.metrics_endpoint);
+    renderPrometheus(d.prometheus_processed, d.metrics_service);
+    renderSpans(d.parsed_spans, d.endpoint_aggregates);
+
+    $('overlay').classList.add('gone');
+  } catch(err) {
+    $('overlay').classList.add('gone');
+    document.getElementById('main').insertAdjacentHTML('afterbegin',
+      `<div class="err-box">⚠ Failed to load data: ${err.message}<br>
+       Make sure <code>python3 dashboard/app.py</code> is running on port 5050.</div>`);
+  }
+}
+
+window.addEventListener('load', init);
+</script>
+</body>
+</html>
